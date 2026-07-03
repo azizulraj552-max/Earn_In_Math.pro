@@ -1,0 +1,14 @@
+{
+  "name": "earninmathproject",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "set-admin": "node scripts/setAdminClaim.js",
+    "check-claims": "node scripts/checkClaims.js",
+    "deploy:functions": "firebase deploy --only functions",
+    "deploy:rules": "firebase deploy --only database"
+  },
+  "dependencies": {
+    "firebase-admin": "^13.0.0"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "rules": {
+    ".read": "auth !== null",
+    ".write": "auth !== null",
+    
+    "users": {
+      "$uid": {
+        ".read": "$uid === auth.uid || auth.token.admin === true || auth.token.superadmin === true",
+        ".write": "$uid === auth.uid || auth.token.admin === true || auth.token.superadmin === true"
+      }
+    },
+    
+    "scores": {
+      ".read": "auth !== null",
+      ".write": "auth !== null"
+    },
+    
+    "requests": {
+      ".read": "auth.token.admin === true || auth.token.superadmin === true",
+      ".write": "auth !== null"
+    },
+    
+    "auditLogs": {
+      ".read": "auth.token.admin === true || auth.token.superadmin === true",
+      ".write": "auth.token.admin === true || auth.token.superadmin === true"
+    },
+    
+    "withdrawRequests": {
+      ".read": "auth.token.admin === true || auth.token.superadmin === true",
+      ".write": "auth !== null"
+    },
+    
+    "fraudLogs": {
+      ".read": "auth.token.admin === true || auth.token.superadmin === true",
+      ".write": "auth.token.admin === true || auth.token.superadmin === true"
+    }
+  }
+}

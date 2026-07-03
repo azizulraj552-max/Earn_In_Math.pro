@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Earn_in_Math Admin</title>
+  <style>
+    :root{
+      --bg:#020617;
+      --panel:#111827;
+      --text:#e5e7eb;
+      --muted:#94a3b8;
+      --blue:#2563eb;
+      --green:#16a34a;
+      --red:#dc2626;
+      --cyan:#06b6d4;
+      --line:rgba(255,255,255,.08);
+    }
+    *{box-sizing:border-box;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    body{margin:0;background:linear-gradient(180deg,#020617,#0f172a 45%,#111827);color:var(--text)}
+    .wrap{max-width:1280px;margin:0 auto;padding:18px}
+    .card{
+      background:rgba(17,24,39,.95);
+      border:1px solid var(--line);
+      border-radius:18px;
+      box-shadow:0 10px 25px rgba(0,0,0,.25);
+      padding:16px;
+      margin-bottom:16px
+    }
+    h1,h2{margin:0 0 10px}
+    .muted{color:var(--muted);font-size:13px;line-height:1.5}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    .row > *{flex:1}
+    input,button{
+      border:none;border-radius:12px;
+      padding:12px 14px;
+      font-size:14px;
+      outline:none
+    }
+    input{
+      width:100%;
+      background:#0b1220;
+      color:#fff;
+      border:1px solid rgba(255,255,255,.1)
+    }
+    button{
+      cursor:pointer;
+      font-weight:800;
+      color:#fff
+    }
+    .btn{background:linear-gradient(180deg,var(--blue),#1d4ed8)}
+    .green{background:linear-gradient(180deg,var(--green),#15803d)}
+    .red{background:linear-gradient(180deg,var(--red),#b91c1c)}
+    .tag{
+      display:inline-block;
+      padding:4px 10px;
+      border-radius:999px;
+      background:#1f2937;
+      font-size:12px;
+      font-weight:800
+    }
+    table{width:100%;border-collapse:collapse;border-radius:14px;overflow:hidden}
+    th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;font-size:14px}
+    th{color:#cbd5e1;font-size:13px}
+    tr:hover td{background:rgba(255,255,255,.02)}
+    .statusBox{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;
+      padding:12px 14px;border-radius:12px;background:#0b1220;border:1px solid rgba(255,255,255,.08)
+    }
+    .small{font-size:12px;color:var(--muted)}
+    .split{display:grid;grid-template-columns:1.4fr 1fr;gap:16px}
+    @media (max-width:900px){.split{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>🛡️ Earn_in_Math Admin Panel</h1>
+      <div class="muted">Admin login করে withdraw requests approve/reject করুন।</div>
+
+      <div class="row" style="margin-top:14px">
+        <input id="email" type="email" placeholder="Admin email" />
+        <input id="password" type="password" placeholder="Password" />
+        <button class="btn" onclick="adminLogin()">🔑 Login</button>
+        <button class="red" onclick="adminLogout()">🚪 Logout</button>
+      </div>
+
+      <div class="statusBox">
+        <div>
+          <div id="loginState" style="font-weight:800">⛔ Not logged in</div>
+          <div id="userInfo" class="small">Waiting for admin authentication</div>
+        </div>
+        <div class="tag" id="liveState">📡 Live: off</div>
+      </div>
+    </div>
+
+    <div class="split">
+      <div class="card">
+        <h2>💳 Withdraw Requests</h2>
+        <div class="muted" style="margin-bottom:10px">Requests এখানে live update হবে।</div>
+        <div id="requestsBox" class="muted">No data yet</div>
+      </div>
+
+      <div class="card">
+        <h2>🔍 Fraud Logs</h2>
+        <div class="muted" style="margin-bottom:10px">Suspicious activity এখানে দেখাবে।</div>
+        <div id="fraudBox" class="muted">No data yet</div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { auth, db, fn } from "./firebase-config.js";
+    import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+    import { httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-functions.js";
+    import { ref, onValue, query, limitToLast } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
+
+    const $ = s => document.querySelector(s);
+    const approveWithdrawFn = httpsCallable(fn, "approveWithdraw");
+    const rejectWithdrawFn = httpsCallable(fn, "rejectWithdraw");
+    let unsubRequests = null;
+    let unsubFraud = null;
+
+    function setState(text, info, live) {
+      if($("#loginState")) $("#loginState").textContent = text;
+      if($("#userInfo")) $("#userInfo").textContent = info;
+      if($("#liveState")) $("#liveState").textContent = live ? "📡 Live: on" : "📡 Live: off";
+    }
+
+    async function adminLogin() {
+      try {
+        const email = $("#email").value.trim();
+        const password = $("#password").value.trim();
+        if (!email || !password) return alert("Email/password দিন");
+        await signInWithEmailAndPassword(auth, email, password);
+      } catch (e) {
+        alert("❌ " + (e.message || "Login failed"));
+      }
+    }
+
+    async function adminLogout() {
+      try {
+        if (unsubRequests) unsubRequests();
+        if (unsubFraud) unsubFraud();
+        unsubRequests = null;
+        unsubFraud = null;
+        await signOut(auth);
+        setState("⛔ Not logged in", "Waiting for admin authentication", false);
+        if($("#requestsBox")) $("#requestsBox").innerHTML = "No data yet";
+        if($("#fraudBox")) $("#fraudBox").innerHTML = "No data yet";
+      } catch (e) {
+        alert("❌ " + (e.message || "Logout failed"));
+      }
+    }
+
+    async function doApprove(requestId) {
+      try {
+        if(!confirm("✅ Approve this request?")) return;
+        await approveWithdrawFn({ requestId });
+        alert("✅ Approved!");
+      } catch (e) {
+        alert("❌ " + (e.message || "Approve failed"));
+      }
+    }
+
+    async function doReject(requestId) {
+      try {
+        if(!confirm("❌ Reject this request?")) return;
+        await rejectWithdrawFn({ requestId });
+        alert("✅ Rejected!");
+      } catch (e) {
+        alert("❌ " + (e.message || "Reject failed"));
+      }
+    }
+
+    function tsToText(v) {
+      if (!v) return "-";
+      const d = new Date(v);
+      return Number.isNaN(d.getTime()) ? "-" : d.toLocaleString();
+    }
+
+    function attachLiveData() {
+      if (unsubRequests) unsubRequests();
+      if (unsubFraud) unsubFraud();
+
+      const requestsRef = query(ref(db, "requests"), limitToLast(50));
+      unsubRequests = onValue(requestsRef, snap => {
+        const data = snap.val() || {};
+        const entries = Object.entries(data);
+        if (entries.length === 0) {
+          if($("#requestsBox")) $("#requestsBox").innerHTML = '<div class="muted">No requests found</div>';
+          return;
+        }
+        const sorted = entries.sort((a, b) => (b[1].createdAt || 0) - (a[1].createdAt || 0));
+        const rows = sorted.map(([id, r]) => `
+          <tr>
+            <td style="font-size:11px; color:var(--muted);">${id.slice(0,8)}</td>
+            <td><strong>${r.name || "User"}</strong></td>
+            <td><span class="tag" style="background:#2563eb;">${r.method || "-"}</span></td>
+            <td><code>${r.number || "-"}</code></td>
+            <td style="color:#4caf50; font-weight:bold;">${r.points || 0}</td>
+            <td>৳${r.amount || 0}</td>
+            <td><span class="tag" style="background:${r.status === 'pending'?'#b45309':'#1f2937'}">${r.status || "pending"}</span></td>
+            <td>
+              ${r.status === "pending" || !r.status ? `
+                <div style="display:flex; gap:6px;">
+                  <button class="green" style="padding: 6px 10px; font-size:12px;" onclick="window.adminApprove('${id}')">✅ Approve</button>
+                  <button class="red" style="padding: 6px 10px; font-size:12px;" onclick="window.adminReject('${id}')">❌ Reject</button>
+                </div>
+              ` : `<span class="small" style="color:var(--muted)">✅ Processed</span>`}
+            </td>
+          </tr>
+        `).join("");
+
+        if($("#requestsBox")) {
+          $("#requestsBox").innerHTML = `
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th><th>Name</th><th>Method</th><th>Number</th><th>Points</th><th>Amount</th><th>Status</th><th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>${rows}</tbody>
+            </table>
+          `;
+        }
+        setState("✅ Logged in", auth.currentUser?.email || "Admin", true);
+      });
+
+      const fraudRef = query(ref(db, "auditLogs"), limitToLast(50));
+      unsubFraud = onValue(fraudRef, snap => {
+        const data = snap.val() || {};
+        const entries = Object.entries(data);
+        if (entries.length === 0) {
+          if($("#fraudBox")) $("#fraudBox").innerHTML = '<div class="muted">No fraud logs</div>';
+          return;
+        }
+        const sorted = entries.sort((a, b) => (b[1].timestamp || 0) - (a[1].timestamp || 0));
+        const rows = sorted.map(([id, r]) => `
+          <tr>
+            <td style="font-size:11px; color:var(--muted);">${id.slice(0,8)}</td>
+            <td><span class="tag" style="background:var(--red);">${r.type || "SUSPICIOUS"}</span></td>
+            <td style="font-size:11px;"><code>${r.uid || "-"}</code></td>
+            <td>${r.method || "-"}</td>
+            <td>${r.amount || "-"}</td>
+            <td class="small">${r.timestamp ? new Date(r.timestamp).toLocaleString() : "-"}</td>
+          </tr>
+        `).join("");
+        if($("#fraudBox")) {
+          $("#fraudBox").innerHTML = `
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th><th>Type</th><th>UID</th><th>Method</th><th>Amount</th><th>Time</th>
+                </tr>
+              </thead>
+              <tbody>${rows}</tbody>
+            </table>
+          `;
+        }
+      });
+    }
+
+    window.adminLogin = adminLogin;
+    window.adminLogout = adminLogout;
+    window.adminApprove = doApprove;
+    window.adminReject = doReject;
+
+    onAuthStateChanged(auth, async user => {
+      if (!user) {
+        setState("⛔ Not logged in", "Waiting for admin authentication", false);
+        return;
+      }
+      try {
+        const token = await user.getIdTokenResult(true);
+        const isAdmin = token.claims.admin === true || token.claims.superadmin === true;
+        if (isAdmin) {
+          setState("✅ Logged in", user.email || user.uid, true);
+          attachLiveData();
+        } else {
+          await signOut(auth);
+          setState("⛔ Not logged in", "Access denied", false);
+        }
+      } catch(e) {
+        setState("⛔ Not logged in", "Auth Error", false);
+      }
+    });
+  </script>
+</body>
+</html>

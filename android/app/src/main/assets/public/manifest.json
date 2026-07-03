@@ -1,0 +1,16 @@
+{
+  "name": "Earn_in_Math",
+  "short_name": "EarnMath",
+  "description": "Math করে টাকা ইনকাম করুন",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#050816",
+  "theme_color": "#22d3ee",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}
