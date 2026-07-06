@@ -1,1 +1,1981 @@
-✅ Earn_in_Math is Live
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Earn_in_Math</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+    :root{
+      --bg:#050816;
+      --panel:#0f172a;
+      --text:#e5e7eb;
+      --muted:#94a3b8;
+      --cyan:#22d3ee;
+      --pink:#fb7185;
+      --lime:#a3e635;
+      --gold:#fbbf24;
+      --blue:#38bdf8;
+      --red:#ef4444;
+      --green:#22c55e;
+      --neon1:#0ea5e9;
+      --neon2:#8b5cf6;
+      --neon3:#ec4899;
+    }
+    *{box-sizing:border-box;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;margin:0;padding:0;}
+    body{margin:0;min-height:100vh;background:radial-gradient(circle at top,#0b1228 0,#050816 45%,#02040b 100%);color:var(--text);overflow-x:hidden}
+    .wrap{max-width:560px;margin:0 auto;min-height:100vh;padding:10px;display:flex;flex-direction:column;gap:8px}
+    .panel,.card,.banner,.leaderbox,.modalcontent,.notice{background:rgba(15,23,42,.94);border:1px solid rgba(148,163,184,.14);border-radius:18px;box-shadow:0 10px 25px rgba(0,0,0,.3);backdrop-filter:blur(8px)}
+
+    /* Header with Neon Glow */
+    .header{position:relative;padding:8px 10px;overflow:hidden}
+    .header::before{content:"";position:absolute;inset:-2px;border-radius:18px;background:conic-gradient(from 0deg,var(--cyan),var(--pink),var(--lime),var(--gold),var(--cyan));filter:blur(16px);opacity:.55;animation:spin 8s linear infinite}
+    @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+    .header-inner{position:relative;z-index:1;display:flex;align-items:center;gap:8px;justify-content:space-between}
+
+    /* Neon Round Logo */
+    .neon-logo {
+      position: relative;
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      background: radial-gradient(circle at 30% 30%, #0b1228, #050816);
+      border: 2px solid rgba(34,211,238,0.3);
+      box-shadow: 0 0 20px rgba(34,211,238,0.2), inset 0 0 20px rgba(34,211,238,0.05);
+    }
+    .neon-logo .logo-ring {
+      position: absolute;
+      inset: -3px;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg, #22d3ee, #fb7185, #a3e635, #fbbf24, #22d3ee);
+      filter: blur(8px);
+      opacity: 0.6;
+      animation: spinRing 6s linear infinite;
+      z-index: 0;
+    }
+    @keyframes spinRing {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .neon-logo .logo-content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      line-height: 1.1;
+      padding: 4px;
+    }
+    .neon-logo .logo-content .main-text {
+      font-size: 11px;
+      font-weight: 900;
+      background: linear-gradient(90deg, #22d3ee, #fb7185, #a3e635, #fbbf24);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 0.3px;
+    }
+    .neon-logo .logo-content .sub-text {
+      font-size: 6px;
+      font-weight: 700;
+      color: #94a3b8;
+      -webkit-text-fill-color: #94a3b8;
+      letter-spacing: 0.2px;
+      line-height: 1.2;
+    }
+
+    .titleWrap{flex:1;min-width:0;padding-left:2px}
+    .title{font-size:18px;font-weight:900;letter-spacing:.3px;background:linear-gradient(90deg,#fff,#22d3ee,#fb7185,#a3e635,#fbbf24,#fff);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .subtitle{font-size:9px;color:#94a3b8;line-height:1.3}
+
+    .rightStack{display:flex;flex-direction:column;gap:3px;min-width:120px;align-items:flex-end}
+    .pill{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:999px;background:linear-gradient(180deg,#0f766e,#155e75);border:1px solid rgba(255,255,255,.08);font-weight:700;font-size:12px;white-space:nowrap}
+    .pill strong{font-size:14px;color:#fbbf24}
+    .miniBtn{border:none;cursor:pointer;color:#fff;padding:4px 8px;border-radius:10px;background:linear-gradient(90deg,var(--neon1),var(--neon2),var(--neon3));border:1px solid rgba(255,255,255,.08);font-weight:700;font-size:9px;width:100%;white-space:nowrap}
+
+    /* Rolling user name + points ticker (same pill, content rolls upward forever) */
+    .userPill{ position:relative; overflow:hidden; height:22px; min-width:120px; padding:2px 10px; }
+    .userTickerList{ list-style:none; margin:0; padding:0; animation:userRoll 5s linear infinite; }
+    .userTickerList li{ height:22px; display:flex; align-items:center; justify-content:center; gap:3px; white-space:nowrap; font-size:12px; font-weight:800; }
+    .pointsVal{ color:#fbbf24; font-size:14px; }
+    .unameVal{ background:linear-gradient(90deg,#22d3ee,#fb7185,#a3e635,#fbbf24); -webkit-background-clip:text; background-clip:text; color:transparent; font-weight:900; letter-spacing:.3px; }
+    @keyframes userRoll{ 0%{transform:translateY(0)} 100%{transform:translateY(-66.6667%)} }
+
+    .marquee{overflow:hidden;white-space:nowrap;border-radius:999px;background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.16);padding:3px 0}
+    .marquee span{display:inline-block;padding-left:100%;animation:marq 16s linear infinite;color:#67e8f9;font-weight:600;font-size:10px}
+    @keyframes marq{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
+
+    /* Banner Ad */
+    .banner{height:50px;display:flex;align-items:center;justify-content:center;font-weight:700;color:#cbd5e1;background:rgba(0,0,0,0.3);border-radius:10px;overflow:hidden;min-height:50px}
+    .banner iframe{width:100%;height:50px;border:none}
+    .banner .ad-placeholder{font-size:10px;color:#64748b;padding:4px}
+
+    /* Monkey mini-game strip: small cute walking monkeys with timed fruit ad-rewards,
+       looks like they emerge from the ad banner just above */
+    .monkey-strip{
+      position:relative; height:78px; overflow:hidden;
+      margin-top:-6px; border-radius:0 0 14px 14px;
+      background:linear-gradient(180deg, rgba(163,230,53,.10), rgba(0,0,0,0) 70%);
+      border:1px solid rgba(148,163,184,.10); border-top:none;
+    }
+    .monkey{ position:absolute; top:4px; left:4%; display:flex; flex-direction:column; align-items:center; z-index:2; }
+    .monkey-figure{ position:relative; width:38px; height:40px; animation:monkeyBobR .45s ease-in-out infinite; }
+    @keyframes monkeyBobR{ 0%,100%{transform:translateY(0) scaleX(1)} 50%{transform:translateY(-3px) scaleX(1)} }
+    @keyframes monkeyBobL{ 0%,100%{transform:translateY(0) scaleX(-1)} 50%{transform:translateY(-3px) scaleX(-1)} }
+    .monkey.facing-left .monkey-figure{ animation-name:monkeyBobL; }
+    .monkey-head{ position:absolute; left:50%; top:0; transform:translateX(-50%); font-size:24px; line-height:1; z-index:3; filter:drop-shadow(0 2px 2px rgba(0,0,0,.45)); }
+    .monkey-body{ position:absolute; left:50%; top:16px; transform:translateX(-50%); width:18px; height:15px; border-radius:7px 7px 4px 4px; z-index:1; box-shadow:inset 0 -3px 4px rgba(0,0,0,.25); }
+    .monkey-male .monkey-body{ background:linear-gradient(180deg,#38bdf8,#1d4ed8); }
+    .monkey-female .monkey-body{ background:linear-gradient(180deg,#f9a8d4,#db2777); }
+    .monkey-leg{ position:absolute; bottom:0; width:5px; height:12px; border-radius:3px; background:#78350f; z-index:0; transform-origin:top center; }
+    .monkey-leg.leg-l{ left:11px; animation:legSwingL .45s ease-in-out infinite; }
+    .monkey-leg.leg-r{ right:11px; animation:legSwingR .45s ease-in-out infinite; }
+    @keyframes legSwingL{ 0%,100%{transform:rotate(22deg)} 50%{transform:rotate(-22deg)} }
+    @keyframes legSwingR{ 0%,100%{transform:rotate(-22deg)} 50%{transform:rotate(22deg)} }
+    .monkey-arm{ position:absolute; top:19px; width:11px; height:3px; border-radius:2px; background:#78350f; z-index:2; }
+    .monkey-male .monkey-arm{ right:-8px; transform:rotate(-14deg); }
+    .monkey-female .monkey-arm{ left:-8px; transform:rotate(14deg); }
+    .monkey-hand{ position:absolute; top:15px; font-size:14px; z-index:3; }
+    .monkey-male .monkey-hand{ right:-15px; }
+    .monkey-female .monkey-hand{ left:-15px; }
+    .fruit-badge{ display:flex; align-items:center; gap:2px; background:rgba(0,0,0,.6); border-radius:999px; padding:1px 6px; margin-top:2px; white-space:nowrap; }
+    .fruit-emoji{ font-size:11px; }
+    .fruit-timer{ font-size:8.5px; font-weight:900; color:#fbbf24; }
+    .fruit-badge.urgent{ background:rgba(239,68,68,.55); }
+    .fruit-badge.urgent .fruit-timer{ color:#fff; animation:urgentPulse .5s ease-in-out infinite; }
+    @keyframes urgentPulse{ 0%,100%{transform:scale(1)} 50%{transform:scale(1.3)} }
+    .fruit-burst{
+      position:absolute; top:26px; left:50%; transform:translateX(-50%);
+      background:linear-gradient(90deg,#f59e0b,#ef4444,#ec4899);
+      color:#fff; font-weight:900; font-size:10.5px; padding:8px 12px; border-radius:999px;
+      cursor:pointer; box-shadow:0 6px 16px rgba(0,0,0,.5); z-index:5; white-space:nowrap;
+      animation:burstPop .35s ease, burstPulse 1s ease-in-out infinite .35s;
+    }
+    @keyframes burstPop{ from{opacity:0; transform:translateX(-50%) scale(.4)} to{opacity:1; transform:translateX(-50%) scale(1)} }
+    @keyframes burstPulse{ 0%,100%{transform:translateX(-50%) scale(1)} 50%{transform:translateX(-50%) scale(1.08)} }
+    .fruit-burst.hidden{ display:none; }
+
+    /* Leaderboard */
+    .leaderbox{padding:4px 10px}
+    .leaderhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;font-size:9px;color:#94a3b8}
+    .ticker{height:22px;overflow:hidden}
+    .ticker ul{list-style:none;margin:0;padding:0;animation:scrollUp 12s linear infinite}
+    .ticker li{display:flex;justify-content:space-between;padding:2px 0;border-bottom:1px dashed rgba(148,163,184,.1);font-size:10px}
+    @keyframes scrollUp{0%{transform:translateY(100%)}100%{transform:translateY(-100%)}}
+
+    .notice{padding:4px 10px;border-left:3px solid var(--cyan)}
+    .notice strong{font-size:11px}
+    .notice .small{font-size:9px;margin-top:1px}
+
+    /* Quiz Card */
+    .card{padding:12px}
+    .timerwrap{display:flex;justify-content:center;margin-bottom:6px}
+    .timer{width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:4px solid var(--blue);background:#07111f;font-size:19px;font-weight:900;box-shadow:0 0 15px rgba(56,189,248,.15)}
+    .question{text-align:center;font-size:19px;font-weight:900;line-height:1.25;margin:6px 0 10px}
+    .answers{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:6px 0}
+    .btn{border:none;border-radius:14px;padding:14px 8px;font-size:16px;font-weight:800;cursor:pointer;color:#fff;background:linear-gradient(90deg,var(--neon1),var(--neon2),var(--neon3));transition:transform .15s ease,opacity .15s ease;box-shadow:0 4px 15px rgba(37,99,235,.15)}
+    .btn:active{transform:scale(.97);opacity:.92}
+    .btn.red{background:linear-gradient(180deg,#dc2626,#b91c1c)}
+    .btn.green{background:linear-gradient(180deg,#16a34a,#15803d)}
+    .btn:disabled{opacity:0.5;cursor:not-allowed}
+    .btn-sm{font-size:14px;padding:12px 6px;border-radius:12px}
+    .msg{min-height:18px;text-align:center;margin-top:4px;font-weight:700;font-size:13px}
+    .msg.ok{color:#86efac}.msg.bad{color:#fca5a5}.msg.info{color:#93c5fd}
+    .row{display:flex;gap:6px;flex-wrap:wrap}
+    .row>*{flex:1}
+
+    /* Ad Grid - 3 Buttons Side by Side */
+    .ad-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px}
+    .ad-grid .btn{width:100%;font-size:11px;padding:10px 4px;text-align:center;position:relative;overflow:hidden;min-height:48px;display:flex;align-items:center;justify-content:center;border-radius:12px}
+    .ad-grid .btn .timer-overlay{position:absolute;inset:0;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:#fbbf24;backdrop-filter:blur(3px);border-radius:12px;transition:opacity .3s;opacity:0;pointer-events:none}
+    .ad-grid .btn .timer-overlay.active{opacity:1;pointer-events:auto}
+    .ad-grid .btn .timer-overlay .timer-text{display:flex;align-items:center;gap:3px}
+    .ad-grid .btn .timer-overlay .timer-text .count{font-size:13px;color:#22d3ee;min-width:22px;text-align:center}
+
+    /* ==========================================
+       FLOATING BUBBLE AD BUTTONS
+    ========================================== */
+    .floating-ad-btn {
+      position: fixed;
+      left: 20px;
+      top: 130px;
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      z-index: 50;
+      cursor: pointer;
+      text-align: center;
+      padding: 4px;
+      line-height: 1.15;
+      background: radial-gradient(circle at 30% 30%, #0b1228, #050816);
+      border: 3px solid rgba(56,189,248,.55);
+      box-shadow: 0 0 18px rgba(56,189,248,.55), inset 0 0 14px rgba(56,189,248,.12), 0 8px 22px rgba(0,0,0,.55);
+      transition: box-shadow .3s, border-color .3s;
+      will-change: left, top;
+    }
+    .floating-ad-btn::before{
+      content:"";
+      position:absolute;
+      inset:-5px;
+      border-radius:50%;
+      background: conic-gradient(from 0deg, #22d3ee, #38bdf8, #8b5cf6, #22d3ee);
+      filter: blur(7px);
+      opacity:.6;
+      z-index:-1;
+      animation: spinRingFloat 5s linear infinite;
+    }
+    @keyframes spinRingFloat{ from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+    .floating-ad-btn .label{ font-size:8px; font-weight:800; color:#7dd3fc; letter-spacing:.2px; }
+    .floating-ad-btn .timer{ font-size:15px; font-weight:900; color:#fbbf24; text-shadow:0 0 10px rgba(251,191,36,.5); }
+    .floating-ad-btn .sub-label{ font-size:7px; color:#94a3b8; font-weight:700; margin-top:1px; }
+    .floating-ad-btn.ready{ border-color: rgba(34,197,94,.8); animation: readyPulseFloat 1s ease-in-out infinite; }
+    .floating-ad-btn.ready::before{ background: conic-gradient(from 0deg,#22c55e,#4ade80,#16a34a,#22c55e); }
+    .floating-ad-btn.ready .timer{ font-size:12px; color:#fff; }
+    @keyframes readyPulseFloat{ 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+    .floating-ad-btn-2 .label{ color:#fde68a; }
+
+    /* Interstitial Ad Overlay */
+    #interstitialAdOverlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+      padding: 20px;
+    }
+    #interstitialAdOverlay.show { display: flex; }
+    .interstitial-box {
+      background: #0f172a;
+      padding: 20px;
+      border-radius: 16px;
+      max-width: 450px;
+      width: 100%;
+      text-align: center;
+      position: relative;
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+      animation: fadeUp 0.4s ease;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .interstitial-box .close-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: #dc2626;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      font-size: 16px;
+      font-weight: 900;
+      cursor: pointer;
+      z-index: 10;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 15px rgba(220,38,38,0.3);
+    }
+    .interstitial-box .close-btn:hover { transform: scale(1.1); }
+    .interstitial-box .close-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .interstitial-box h3 {
+      color: #fff;
+      margin-bottom: 10px;
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .interstitial-box .ad-container {
+      width: 100%;
+      min-height: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: rgba(0,0,0,0.2);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .interstitial-box .ad-container iframe {
+      width: 100%;
+      height: 60px;
+      border: none;
+    }
+    .interstitial-box .status-text {
+      color: #94a3b8;
+      font-size: 12px;
+      margin-top: 10px;
+    }
+    .interstitial-box .status-text.success {
+      color: #86efac;
+    }
+
+    /* Overlays & Modals */
+    input{width:100%;padding:8px 10px;border-radius:10px;border:1px solid rgba(148,163,184,.2);background:#0b1220;color:#fff;outline:none;font-size:13px}
+    label{font-size:11px;color:#94a3b8;display:block;margin:3px 0 2px}
+    .footerBtns{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px}
+    .hidden{display:none !important}
+    .overlay{position:fixed;inset:0;background:rgba(2,6,23,.8);display:flex;align-items:center;justify-content:center;padding:16px;z-index:60;backdrop-filter:blur(4px)}
+    .modalcontent{width:100%;max-width:400px;padding:14px;max-height:90vh;overflow-y:auto}
+    .small{font-size:10px;color:var(--muted);line-height:1.4}
+    .notify{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#0b1220;border:1px solid rgba(255,255,255,.1);color:#fff;padding:6px 14px;border-radius:999px;z-index:80;display:none;font-size:12px}
+    .rulesBox{max-height:40vh;overflow:auto}
+    .rulesItem{padding:5px 0;border-bottom:1px solid rgba(148,163,184,.08);font-size:11px}
+    .refLinkBox{margin-top:6px;padding:8px;border-radius:10px;background:#0b1220;border:1px solid rgba(255,255,255,.08);word-break:break-all;font-size:11px;color:#94a3b8}
+    .refBtnArea{margin-top:6px;display:flex;gap:6px}
+    .refBtnArea .btn{flex:1;font-size:11px;padding:6px}
+    .ad-inner{width:100%;min-height:280px;background:#000;border-radius:12px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+    .ad-iframe{width:100%;min-height:250px;border:none}
+    .ad-counter{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.8);color:#fff;padding:4px 12px;border-radius:999px;font-weight:800;z-index:10;font-size:13px}
+    .ad-container-relative{position:relative}
+    .icon{font-size:40px;text-align:center;margin-bottom:8px}
+
+    /* Welcome Tip (colorful auto-dismiss popup shown on the login screen) */
+    .welcome-tip{
+      position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      z-index: 75; width: 88%; max-width: 380px;
+      padding: 18px 34px 18px 18px; border-radius: 10px;
+      background: linear-gradient(135deg, #0ea5e9, #8b5cf6, #ec4899, #fbbf24);
+      background-size: 300% 300%;
+      border: 2px solid #22d3ee;
+      box-shadow: 0 0 18px rgba(34,211,238,.8), 0 0 34px rgba(139,92,246,.45), 0 16px 36px rgba(0,0,0,.6);
+      animation: welcomeGlow 5s ease infinite, welcomeSlideIn .35s ease, welcomeNeon 1.8s ease-in-out infinite;
+    }
+    @keyframes welcomeGlow{ 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+    @keyframes welcomeSlideIn{ from{opacity:0; transform:translate(-50%, calc(-50% - 22px)) scale(.94)} to{opacity:1; transform:translate(-50%, -50%) scale(1)} }
+    @keyframes welcomeNeon{
+      0%{ box-shadow:0 0 14px rgba(34,211,238,.8), 0 0 30px rgba(34,211,238,.35), 0 16px 36px rgba(0,0,0,.6); border-color:#22d3ee; }
+      33%{ box-shadow:0 0 14px rgba(236,72,153,.85), 0 0 30px rgba(236,72,153,.4), 0 16px 36px rgba(0,0,0,.6); border-color:#ec4899; }
+      66%{ box-shadow:0 0 14px rgba(251,191,36,.85), 0 0 30px rgba(251,191,36,.4), 0 16px 36px rgba(0,0,0,.6); border-color:#fbbf24; }
+      100%{ box-shadow:0 0 14px rgba(34,211,238,.8), 0 0 30px rgba(34,211,238,.35), 0 16px 36px rgba(0,0,0,.6); border-color:#22d3ee; }
+    }
+    .welcome-tip-text{ color:#fff; font-size:13px; font-weight:800; line-height:1.7; text-align:left; text-shadow:0 1px 3px rgba(0,0,0,.4); }
+    .welcome-tip-text strong{ color:#fff700; }
+    .welcome-tip-highlight{ display:block; margin-top:7px; font-weight:900; font-size:14.5px; text-align:left; background:linear-gradient(90deg,#fff,#fef08a,#fff); -webkit-background-clip:text; background-clip:text; color:transparent; }
+    .welcome-tip-close{
+      position:absolute; top:6px; right:6px; background:rgba(0,0,0,.35); color:#fff;
+      border:none; width:22px; height:22px; border-radius:50%; font-size:12px; cursor:pointer; line-height:1;
+    }
+    .welcome-tip.hidden{ display:none; }
+
+    /* Withdraw method picker */
+    .wd-method-list{ display:flex; flex-direction:column; gap:8px; margin-top:6px; }
+    .wd-method{ display:flex; align-items:center; justify-content:space-between; padding:13px 16px; border-radius:14px; font-weight:900; font-size:14px; color:#fff; cursor:pointer; border:2px solid transparent; transition:transform .15s ease, border-color .15s ease; }
+    .wd-method:active{ transform:scale(.97); }
+    .wd-method .wd-method-check{ opacity:0; font-size:17px; font-weight:900; transition:opacity .15s ease; }
+    .wd-method.selected{ border-color:#fff; }
+    .wd-method.selected .wd-method-check{ opacity:1; }
+    .wd-bkash{ background:linear-gradient(135deg,#e2136e,#ff4f9a); box-shadow:0 6px 16px rgba(226,19,110,.35); }
+    .wd-nagad{ background:linear-gradient(135deg,#f7941d,#f04e23); box-shadow:0 6px 16px rgba(240,78,35,.35); }
+    .wd-rocket{ background:linear-gradient(135deg,#8c3ab5,#5e17eb); box-shadow:0 6px 16px rgba(94,23,235,.35); }
+  </style>
+</head>
+<body>
+
+  <!-- Error Popup -->
+  <div id="errorPopupOverlay" class="overlay hidden">
+    <div class="modalcontent">
+      <div class="icon">⚠️</div>
+      <div class="title" style="font-size:20px;text-align:center;color:#fca5a5;">দুঃখিত!</div>
+      <p id="errorMessageText" class="small" style="text-align:center;margin:8px 0 16px;">নেটওয়ার্ক স্বল্পতা! আবার চেষ্টা করুন।</p>
+      <button class="btn red" onclick="closeErrorPopup()" style="width:100%;">ঠিক আছে</button>
+    </div>
+  </div>
+
+  <!-- Floating Ad Button 1 (Bubble) -->
+  <div class="floating-ad-btn floating-ad-btn-1" id="floatingAdBtn1">
+    <span class="label">💥 ধামাকা</span>
+    <span class="timer" id="floatingAdTimer1">3:00</span>
+    <span class="sub-label" id="floatingSub1">পয়েন্ট আসছে</span>
+  </div>
+
+  <!-- Floating Ad Button 2 (Bubble) -->
+  <div class="floating-ad-btn floating-ad-btn-2" id="floatingAdBtn2">
+    <span class="label">💰 টাকা</span>
+    <span class="timer" id="floatingAdTimer2">2:00</span>
+    <span class="sub-label" id="floatingSub2">নাও</span>
+  </div>
+
+  <!-- Interstitial Ad Overlay -->
+  <div id="interstitialAdOverlay">
+    <div class="interstitial-box">
+      <button class="close-btn" id="interstitialCloseBtn" disabled>✕</button>
+      <h3>🎬 অ্যাড দেখুন</h3>
+      <div class="ad-container" id="interstitialAdContainer">
+        <div class="ad-placeholder" style="color:#64748b;font-size:11px;">📢 Loading Ad...</div>
+      </div>
+      <p class="status-text" id="interstitialAdStatus">⏳ ৩ সেকেন্ড অপেক্ষা করুন...</p>
+    </div>
+  </div>
+
+
+  <!-- Login Overlay -->
+  <!-- Welcome Tip (auto-hides after 3s, or user can close it). Self-contained: does not
+       depend on the Firebase module script, so it always works even if that script errors. -->
+  <div id="welcomeTipOverlay" class="welcome-tip">
+    <button class="welcome-tip-close" onclick="window.closeWelcomeTip()">✕</button>
+    <div class="welcome-tip-text">
+      আপনি নতুন হলে প্রথমে <strong>সাইনআপ</strong> করুন, পরে <strong>লগইন</strong> করবেন।<br>
+      আর আগে সাইনআপ করা থাকলে শুধু <strong>লগইন</strong> করবেন।<br>
+      <span class="welcome-tip-highlight">আমার আ্যাপে আপনাকে স্বাগতম 🎉</span>
+    </div>
+  </div>
+  <script>
+    // Plain (non-module) script — always runs immediately, independent of Firebase.
+    window.closeWelcomeTip = function() {
+      var el = document.getElementById('welcomeTipOverlay');
+      if (el) el.classList.add('hidden');
+      if (window.__welcomeTipTimer) clearTimeout(window.__welcomeTipTimer);
+    };
+    window.showWelcomeTip = function() {
+      var el = document.getElementById('welcomeTipOverlay');
+      if (el) el.classList.remove('hidden');
+      if (window.__welcomeTipTimer) clearTimeout(window.__welcomeTipTimer);
+      window.__welcomeTipTimer = setTimeout(window.closeWelcomeTip, 3000);
+    };
+    window.__welcomeTipTimer = setTimeout(window.closeWelcomeTip, 3000);
+  </script>
+
+  <div id="loginOverlay" class="overlay">
+    <div class="modalcontent">
+      <div class="header" style="margin-bottom:8px">
+        <div class="header-inner">
+          <div class="neon-logo">
+            <div class="logo-ring"></div>
+            <div class="logo-content">
+              <span class="main-text">Earn</span>
+              <span class="sub-text">গণিত করো পয়েন্ট নাও</span>
+            </div>
+          </div>
+          <div class="titleWrap">
+            <div class="title">Earn_in_Math</div>
+            <div class="subtitle">Math করে টাকা ইনকাম করার প্রফেশনাল গেম</div>
+          </div>
+        </div>
+      </div>
+      <label>নাম</label>
+      <input id="nameInput" placeholder="আপনার নাম" />
+
+      <label>ইমেইল</label>
+      <input id="emailInput" type="email" placeholder="আপনার ইমেইল" />
+
+      <label>পাসওয়ার্ড</label>
+      <input id="passInput" type="password" placeholder="৬+ অক্ষর" />
+
+      <div class="footerBtns">
+        <button class="btn" id="signupBtn">Sign Up</button>
+        <button class="btn" id="loginBtn">Login</button>
+      </div>
+      <div id="authError" class="msg bad" style="text-align:center;margin-top:6px;font-size:12px;"></div>
+    </div>
+  </div>
+
+  <!-- Rules Overlay -->
+  <div id="rulesOverlay" class="overlay hidden">
+    <div class="modalcontent">
+      <div class="title" style="font-size:18px">📜 অ্যাপ নিয়ম</div>
+      <p class="small">নিচের নিয়মগুলো মেনে অ্যাপ ব্যবহার করুন।</p>
+      <div id="rulesList" class="notice rulesBox"></div>
+      <div class="footerBtns">
+        <button class="btn" onclick="closeRules()">Close</button>
+        <button class="btn" onclick="openWhatsappComplaint()">WhatsApp Complaint</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Referral Overlay -->
+  <div id="referralOverlay" class="overlay hidden">
+    <div class="modalcontent">
+      <div class="title" style="font-size:18px">👥 বন্ধুকে জানিয়ে আয় করো</div>
+      <p class="small">নিচের referral link কপি করে বন্ধুদের পাঠান।</p>
+      <div id="refLinkText" class="refLinkBox">Loading...</div>
+      <div id="refConditions" class="notice rulesBox" style="margin-top:6px"></div>
+      <div class="refBtnArea">
+        <button class="btn" onclick="copyReferralLink()">Copy Link</button>
+        <button class="btn" onclick="closeReferral()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- VPN Notice Overlay -->
+  <div id="vpnOverlay" class="overlay hidden">
+    <div class="modalcontent">
+      <div class="title" style="font-size:18px">🌐 দৃষ্টি আকর্ষণ</div>
+      <p class="small">সততার সাথে কাজ করুন ইনশাআল্লাহ ১০০% পেমেন্ট গ্যারান্টি।</p>
+      <div class="footerBtns">
+        <button class="btn" onclick="dismissVpnNotice()">OK</button>
+        <button class="btn" onclick="showRules()">App Rules</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quit Overlay -->
+  <div id="quitOverlay" class="overlay hidden">
+    <div class="modalcontent">
+      <div class="title" style="font-size:18px">🚪 তুমি কি বের হতে চাচ্ছো?</div>
+      <p class="small">না বাটনে চাপ দিলে আবার গেমে ফিরে যাবে।</p>
+      <div class="footerBtns">
+        <button class="btn" onclick="hideQuit()">না</button>
+        <button class="btn red" onclick="exitApp()">হ্যা</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Logout Overlay -->
+  <div id="logoutOverlay" class="overlay hidden">
+    <div class="modalcontent">
+      <div class="title" style="font-size:18px">🚪 তুমি কি নিশ্চিত লগআউট করতে চাচ্ছো?</div>
+      <p class="small">হ্যা দিলে logout হবে, না দিলে গেমে ফিরে যাবে।</p>
+      <div class="footerBtns">
+        <button class="btn" onclick="hideLogoutConfirm()">না</button>
+        <button class="btn red" onclick="confirmLogoutAction()">হ্যা</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Withdraw Status Overlay -->
+  <div id="withdrawStatusOverlay" class="overlay hidden">
+    <div class="modalcontent">
+      <div class="title" style="font-size:18px">💳 Withdraw Status</div>
+      <p class="small" id="withdrawStatusText">Pending...</p>
+      <div class="footerBtns"><button class="btn" onclick="closeWithdrawStatus()">Close</button></div>
+    </div>
+  </div>
+
+  <!-- Withdraw Flow Overlay (method -> number -> name -> pending) -->
+  <div id="withdrawOverlay" class="overlay hidden">
+    <div class="modalcontent">
+      <div class="title" style="font-size:18px">💳 Withdraw করুন</div>
+
+      <div id="withdrawStep1">
+        <p class="small" style="margin:8px 0;">পেমেন্ট মেথড সিলেক্ট করুন:</p>
+        <div class="wd-method-list">
+          <div class="wd-method wd-bkash" data-method="Bkash">
+            <span class="wd-method-name">📱 Bkash</span>
+            <span class="wd-method-check">✓</span>
+          </div>
+          <div class="wd-method wd-nagad" data-method="Nagad">
+            <span class="wd-method-name">💚 Nagad</span>
+            <span class="wd-method-check">✓</span>
+          </div>
+          <div class="wd-method wd-rocket" data-method="Rocket">
+            <span class="wd-method-name">🚀 Rocket</span>
+            <span class="wd-method-check">✓</span>
+          </div>
+        </div>
+        <button class="btn btn-sm" style="margin-top:10px;width:100%" onclick="closeWithdrawFlow()">বাতিল করুন</button>
+      </div>
+
+      <div id="withdrawStep2" class="hidden">
+        <p class="small" style="margin:8px 0;">আপনার পেমেন্ট নাম্বারটি প্রদান করুন:</p>
+        <input id="withdrawNumberInput" type="tel" placeholder="01XXXXXXXXX" />
+        <div class="footerBtns">
+          <button class="btn btn-sm" onclick="wdBackToMethod()">পেছনে</button>
+          <button class="btn btn-sm green" onclick="wdConfirmNumber()">ওকে</button>
+        </div>
+      </div>
+
+      <div id="withdrawStep3" class="hidden">
+        <p class="small" style="margin:8px 0;">আপনার রেজিস্ট্রার করা নামটি দিন:</p>
+        <input id="withdrawNameInput" type="text" placeholder="আপনার নাম" />
+        <div class="footerBtns">
+          <button class="btn btn-sm" onclick="wdBackToNumber()">পেছনে</button>
+          <button class="btn btn-sm green" onclick="wdConfirmName()">ওকে</button>
+        </div>
+      </div>
+
+      <div id="withdrawStep4" class="hidden" style="text-align:center;">
+        <div class="icon">⏳</div>
+        <p style="font-weight:800;font-size:14px;color:#86efac;">অপেক্ষা করুন, ২৪ ঘন্টার মধ্যে আপনি পেমেন্ট পেয়ে যাবেন। ধন্যবাদ</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Overlay -->
+  <div id="successOverlay" class="overlay hidden">
+    <div class="modalcontent">
+      <div class="title" style="font-size:18px">🎉 তুমি পেরেছো!</div>
+      <p class="small">এখনি টাকা নিতে withdraw বাটনে চাপ দাও।</p>
+      <div class="footerBtns">
+        <button class="btn" onclick="openWithdraw();hideSuccess()">Withdraw</button>
+        <button class="btn" onclick="hideSuccess()">Later</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ad Overlay (Banner Ad shown as reward ad) -->
+  <div id="adOverlay" class="overlay hidden">
+    <div class="modalcontent ad-container-relative">
+      <div class="title" style="font-size:18px">🎬 ভিডিও এড চলছে</div>
+      <div id="adCounter" class="ad-counter">⏳ 15s</div>
+      <p class="small" id="adText">বিজ্ঞাপন লোড হচ্ছে...</p>
+      <div class="ad-inner"><div id="adFrame" class="ad-iframe"></div></div>
+      <div class="footerBtns">
+        <button class="btn red" id="adCloseBtn" disabled>✕ Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="notify" id="notify"></div>
+
+  <!-- ========================================== -->
+  <!-- MAIN APP -->
+  <!-- ========================================== -->
+  <div class="wrap" id="mainApp">
+
+    <!-- HEADER with Neon Round Logo -->
+    <div class="panel header">
+      <div class="header-inner">
+        <div class="neon-logo">
+          <div class="logo-ring"></div>
+          <div class="logo-content">
+            <span class="main-text">Earn</span>
+            <span class="sub-text">গণিত করো পয়েন্ট নাও</span>
+          </div>
+        </div>
+        <div class="titleWrap">
+          <div class="title">Earn_in_Math</div>
+          <div class="subtitle">গণিত করো, points নাও, withdraw করো</div>
+        </div>
+        <div class="rightStack">
+          <div class="pill userPill">
+            <ul class="userTickerList">
+              <li><span>⭐</span><strong class="pointsVal">0</strong></li>
+              <li><span class="unameVal">✨ Player</span></li>
+              <li><span>⭐</span><strong class="pointsVal">0</strong></li>
+            </ul>
+          </div>
+          <button class="miniBtn" onclick="openReferral()">👥 রেফারেল</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Marquee -->
+    <div class="marquee"><span id="refTicker">👥 বন্ধুকে জানিয়ে আয় করো — প্রতি সফল referral এ 100 points</span></div>
+
+    <!-- Notice -->
+    <div class="notice"><strong>🌐 দৃষ্টি আকর্ষণ</strong><div class="small">সততার সাথে কাজ করুন ইনশাআল্লাহ ১০০% পেমেন্ট গ্যারান্টি</div></div>
+
+    <!-- TOP BANNER AD -->
+    <div class="banner" id="topBannerAd">
+      <div class="ad-placeholder">📢 Loading Ad...</div>
+    </div>
+
+    <!-- Monkey mini-game strip (cute walking monkeys, fruit timers, ad rewards) -->
+    <div class="monkey-strip" id="monkeyStrip">
+      <div class="monkey monkey-male" id="monkeyMale">
+        <div class="monkey-figure">
+          <span class="monkey-head">🐒</span>
+          <div class="monkey-body"></div>
+          <div class="monkey-leg leg-l"></div>
+          <div class="monkey-leg leg-r"></div>
+          <div class="monkey-arm"></div>
+          <span class="monkey-hand">🍎</span>
+        </div>
+        <div class="fruit-badge" id="appleBadge">
+          <span class="fruit-emoji">🍎</span>
+          <span class="fruit-timer" id="appleTimerText">5:00</span>
+        </div>
+      </div>
+      <div class="monkey monkey-female" id="monkeyFemale">
+        <div class="monkey-figure">
+          <span class="monkey-head">🐒</span>
+          <div class="monkey-body"></div>
+          <div class="monkey-leg leg-l"></div>
+          <div class="monkey-leg leg-r"></div>
+          <div class="monkey-arm"></div>
+          <span class="monkey-hand">🍊</span>
+        </div>
+        <div class="fruit-badge" id="orangeBadge">
+          <span class="fruit-emoji">🍊</span>
+          <span class="fruit-timer" id="orangeTimerText">7:00</span>
+        </div>
+      </div>
+      <div class="fruit-burst hidden" id="appleBurstBtn" onclick="window.claimMonkeyReward('apple')">💥 <span>আপনার পয়েন্ট নিন</span></div>
+      <div class="fruit-burst hidden" id="orangeBurstBtn" onclick="window.claimMonkeyReward('orange')">💥 <span>তাড়াতাড়ি পয়েন্ট নাও</span></div>
+    </div>
+
+    <!-- Leaderboard -->
+    <div class="leaderbox">
+      <div class="leaderhead"><span>🏆 Top 5 Scorers</span><span>Realtime</span></div>
+      <div class="ticker"><ul id="leaderList"></ul></div>
+    </div>
+
+
+    <!-- Quiz Card -->
+    <div class="card quizCard">
+      <div class="timerwrap"><div class="timer" id="timer">5</div></div>
+      <div class="question" id="question">Press Start</div>
+      <div class="answers" id="answers"></div>
+      <div id="message" class="msg"></div>
+
+      <button class="btn" style="width:100%;margin-top:6px" id="startGameBtn">🎮 গেম খেলুন</button>
+
+      <!-- 3 AD BUTTONS - Side by Side -->
+      <div class="ad-grid">
+        <button class="btn" id="rewardBtn">🎬 এড দেখুন
+          <span class="timer-overlay" id="rewardTimerOverlay">
+            <span class="timer-text"><span class="label">⏳</span><span class="count" id="rewardTimerCount">3:00</span></span>
+          </span>
+        </button>
+        <button class="btn" id="interstitialBtn">📺 রিওয়ার্ড নিন
+          <span class="timer-overlay" id="interstitialTimerOverlay">
+            <span class="timer-text"><span class="label">⏳</span><span class="count" id="interstitialTimerCount">3:00</span></span>
+          </span>
+        </button>
+        <button class="btn green" id="moreIncomeBtn">🎁 বোনাস নিন
+          <span class="timer-overlay" id="moreIncomeTimerOverlay">
+            <span class="timer-text"><span class="label">⏳</span><span class="count" id="moreIncomeTimerCount">3:00</span></span>
+          </span>
+        </button>
+      </div>
+
+      <!-- Rules & Withdraw - Side by Side -->
+      <div class="row" style="margin-top:8px">
+        <button class="btn btn-sm" onclick="showRules()">📜 Rules</button>
+        <button class="btn btn-sm" id="withdrawBtn" onclick="openWithdraw()">💳 Withdraw</button>
+      </div>
+
+      <!-- Logout & Exit - Side by Side -->
+      <div class="row" style="margin-top:8px">
+        <button class="btn btn-sm red" onclick="confirmLogout()">🚪 Logout</button>
+        <button class="btn btn-sm red" onclick="confirmQuit()">❌ Exit</button>
+      </div>
+    </div>
+
+    <!-- BOTTOM BANNER AD -->
+    <div class="banner" id="bottomBannerAd">
+      <div class="ad-placeholder">📢 Loading Ad...</div>
+    </div>
+
+  </div>
+
+  <!-- ========================================== -->
+  <!-- SCRIPT -->
+  <!-- ========================================== -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+    import { getDatabase, ref, get, set, update, push, runTransaction, onValue, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDC3XkjGSipCoVgTKuGSHpTl-H80ehcBCg",
+      authDomain: "earninmath.firebaseapp.com",
+      databaseURL: "https://earninmath-default-rtdb.firebaseio.com",
+      projectId: "earninmath",
+      storageBucket: "earninmath.firebasestorage.app",
+      messagingSenderId: "116671428757",
+      appId: "1:116671428757:web:e78bb972a20e6f1fe4039c"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+    try {
+      await setPersistence(auth, browserLocalPersistence);
+    } catch (e) {
+      console.warn("Firebase setPersistence failed (continuing anyway):", e);
+    }
+
+    // ==========================================
+    // VOICE SYSTEM
+    // ==========================================
+    let voicePlayed = false;
+
+    function speakText(text, callback) {
+      if (!window.speechSynthesis) { if (callback) callback(); return; }
+      try { window.speechSynthesis.cancel(); } catch(e) {}
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'bn-BD';
+      utterance.rate = 0.9;
+      utterance.pitch = 1.1;
+      utterance.volume = 1;
+      try {
+        const voices = window.speechSynthesis.getVoices();
+        const bengaliVoice = voices.find(v => v.lang === 'bn-BD' || v.lang === 'bn-IN' || v.lang.startsWith('bn'));
+        if (bengaliVoice) utterance.voice = bengaliVoice;
+      } catch(e) {}
+      if (callback) utterance.onend = callback;
+      utterance.onerror = function(e) { console.warn("Speech error:", e); if (callback) callback(); };
+      try { window.speechSynthesis.speak(utterance); } catch(e) { console.warn("Could not speak:", e); if (callback) callback(); }
+    }
+
+    function playWelcomeVoice() {
+      if (voicePlayed) return;
+      voicePlayed = true;
+      speakText("আমার আ্যাপে তোমাকে স্বাগতম। গেম খেলো, টাকা কামাও।");
+    }
+    function playQuizVoice() {
+      speakText("এটাই আমাদের কুইজ বাড়ি। কুইজ খেলো, এড দেখো, টাকা কামাও।");
+    }
+    function setupVoice() {
+      if (!window.speechSynthesis) return;
+      try { window.speechSynthesis.getVoices(); } catch(e) {}
+      try { window.speechSynthesis.onvoiceschanged = () => { try { window.speechSynthesis.getVoices(); } catch(e) {} }; } catch(e) {}
+      const handler = () => {
+        playWelcomeVoice();
+        document.removeEventListener('click', handler);
+        document.removeEventListener('touchstart', handler);
+      };
+      document.addEventListener('click', handler);
+      document.addEventListener('touchstart', handler);
+      setTimeout(() => { if (!voicePlayed) playWelcomeVoice(); }, 2000);
+    }
+    window.addEventListener('load', () => { setTimeout(setupVoice, 500); });
+
+    // ==========================================
+    // STATE
+    // ==========================================
+    const state = {
+      user: null, points: 0, q: null, timer: 5, timerId: null, correctCount: 0,
+      withdrawThreshold: 1000, withdrawDeduct: 1000, usedQuestions: new Set(),
+      referralCount: 0, appLink: location.origin + location.pathname,
+      isAdShowing: false,
+      // Independent cooldown lock (lockUntil timestamp in ms, 0 = unlocked) per ad-grid button.
+      // Each key is completely separate — watching an ad on one never touches the others.
+      adLocks: { reward: 0, interstitial: 0, moreIncome: 0 },
+      autoAd1: { timerId: null, remaining: 180, isRunning: false, holding: false, holdTimeout: null, holdInterval: null, holdRemaining: 30 },
+      autoAd2: { timerId: null, remaining: 120, isRunning: false, holding: false, holdTimeout: null, holdInterval: null, holdRemaining: 30 },
+      bubbleAnimStarted: false,
+      dailyQuizLimit: 60, quizCount: 0, quizResetAt: 0, quizLockTimerId: null, userName: 'Player'
+    };
+
+    const $ = s => document.querySelector(s);
+
+    // ==========================================
+    // ERROR POPUP
+    // ==========================================
+    window.showErrorPopup = function(message) {
+      const overlay = document.getElementById('errorPopupOverlay');
+      document.getElementById('errorMessageText').textContent = message || 'নেটওয়ার্ক স্বল্পতা! আবার চেষ্টা করুন।';
+      overlay.classList.remove('hidden');
+    };
+    window.closeErrorPopup = function() {
+      document.getElementById('errorPopupOverlay').classList.add('hidden');
+    };
+
+    // Welcome tip logic now lives in a standalone plain <script> tag near its HTML
+    // (see window.closeWelcomeTip / window.showWelcomeTip) so it never breaks even
+    // if this Firebase module script hits an error.
+
+    const showMsg = (t, c = "info") => { const el = $("#message"); if (el) { el.textContent = t; el.className = "msg " + c; } };
+    const toast = t => { const n = $("#notify"); if (!n) return; n.textContent = t; n.style.display = "block"; clearTimeout(window.__nt); window.__nt = setTimeout(() => n.style.display = "none", 1800); };
+    const showOverlay = id => { const el = $(id); if (el) el.classList.remove("hidden"); };
+    const hideOverlay = id => { const el = $(id); if (el) el.classList.add("hidden"); };
+    const randInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+    function formatTime(seconds) {
+      const m = Math.floor(seconds / 60);
+      const s = seconds % 60;
+      return `${m}:${s.toString().padStart(2, '0')}`;
+    }
+
+    // ==========================================
+    // AD BANNER INJECTION (fixes ads not showing:
+    // innerHTML with <script> tags never executes,
+    // so ad scripts must be created + appended manually)
+    // ==========================================
+    const AD_KEYS = { small: 'c5591d9c27383186cec1a68659fd6e2a', box: '870834164a89163a8bc65182cf7a4550' };
+
+    function injectAdBanner(containerEl, key, width, height) {
+      if (!containerEl) return;
+      containerEl.innerHTML = '';
+      try {
+        // Chrome blocks document.write() from scripts injected after page-load
+        // (which is exactly what the ad network's invoke.js does internally).
+        // Fix: run it inside a *fresh* iframe document, where document.write()
+        // during that document's own initial parse is fully allowed.
+        const iframe = document.createElement('iframe');
+        iframe.style.width = '100%';
+        iframe.style.maxWidth = width + 'px';
+        iframe.style.height = height + 'px';
+        iframe.style.border = 'none';
+        iframe.style.display = 'block';
+        iframe.style.margin = '0 auto';
+        iframe.scrolling = 'no';
+        containerEl.appendChild(iframe);
+        const doc = iframe.contentWindow.document;
+        doc.open();
+        doc.write(
+          '<!DOCTYPE html><html><head><meta charset="utf-8">' +
+          '<style>html,body{margin:0;padding:0;overflow:hidden;background:transparent;}</style></head><body>' +
+          '<script>atOptions = { "key" : "' + key + '", "format" : "iframe", "height" : ' + height + ', "width" : ' + width + ', "params" : {} };<\/script>' +
+          '<script src="https://www.highperformanceformat.com/' + key + '/invoke.js"><\/script>' +
+          '</body></html>'
+        );
+        doc.close();
+      } catch(e) { console.error("Ad inject error:", e); }
+    }
+
+    // ==========================================
+    // AUTH FUNCTIONS
+    // ==========================================
+    const signup = async () => {
+      try {
+        const name = $("#nameInput").value.trim();
+        const email = $("#emailInput").value.trim();
+        const pass = $("#passInput").value.trim();
+        if (!name || !email || !pass) return showErrorPopup("সব তথ্য দিন!");
+        if (pass.length < 6) return showErrorPopup("পাসওয়ার্ড ৬+ অক্ষর!");
+        const cred = await createUserWithEmailAndPassword(auth, email, pass);
+        await updateProfile(cred.user, { displayName: name });
+        await ensureUserDoc(cred.user, name);
+        state.user = cred.user;
+        hideOverlay("#loginOverlay");
+        await syncFromDb(cred.user);
+        await loadLeaderboard();
+        attachWithdrawListener();
+        initAdTimers();
+        setTimeout(() => playQuizVoice(), 1500);
+      } catch(e) {
+        let msg = e.message;
+        if (e.code === 'auth/email-already-in-use') msg = '❌ এই ইমেইল ইতিমধ্যে ব্যবহার হয়েছে!';
+        else if (e.code === 'auth/weak-password') msg = '❌ পাসওয়ার্ড খুব দুর্বল!';
+        else if (e.code === 'auth/invalid-email') msg = '❌ ভুল ইমেইল ফরম্যাট!';
+        else if (e.code === 'auth/network-request-failed') msg = '❌ ইন্টারনেট কানেকশন নেই!';
+        document.getElementById('authError').textContent = msg;
+        showErrorPopup(msg);
+      }
+    };
+
+    const login = async () => {
+      try {
+        const email = $("#emailInput").value.trim();
+        const pass = $("#passInput").value.trim();
+        if (!email || !pass) return showErrorPopup("ইমেইল ও পাসওয়ার্ড দিন!");
+        const cred = await signInWithEmailAndPassword(auth, email, pass);
+        state.user = cred.user;
+        hideOverlay("#loginOverlay");
+        await ensureUserDoc(cred.user, cred.user.displayName || "Player");
+        await syncFromDb(cred.user);
+        await loadLeaderboard();
+        attachWithdrawListener();
+        await restoreWithdrawPending();
+        initAdTimers();
+        setTimeout(() => playQuizVoice(), 1500);
+      } catch(e) {
+        let msg = e.message;
+        if (e.code === 'auth/user-not-found') msg = '❌ এই ইমেইলে কোনো ইউজার নেই! সাইনআপ করুন।';
+        else if (e.code === 'auth/wrong-password') msg = '❌ ভুল পাসওয়ার্ড!';
+        else if (e.code === 'auth/invalid-email') msg = '❌ ভুল ইমেইল ফরম্যাট!';
+        else if (e.code === 'auth/too-many-requests') msg = '❌ অনেকবার চেষ্টা! কিছুক্ষণ পর চেষ্টা করুন।';
+        else if (e.code === 'auth/network-request-failed') msg = '❌ ইন্টারনেট কানেকশন নেই!';
+        document.getElementById('authError').textContent = msg;
+        showErrorPopup(msg);
+      }
+    };
+
+    const doLogout = async () => { await signOut(auth); location.reload(); };
+    const confirmQuit = () => showOverlay("#quitOverlay");
+    const confirmLogout = () => showOverlay("#logoutOverlay");
+    window.confirmLogout = confirmLogout;
+    window.confirmLogoutAction = doLogout;
+    window.confirmQuit = confirmQuit;
+    window.hideQuit = () => hideOverlay("#quitOverlay");
+    window.hideLogoutConfirm = () => hideOverlay("#logoutOverlay");
+
+    // ==========================================
+    // USER MANAGEMENT
+    // ==========================================
+    const ensureUserDoc = async (user, name) => {
+      const uref = ref(db, `users/${user.uid}`);
+      const snap = await get(uref);
+      if (!snap.exists()) {
+        await set(uref, { name: name || user.displayName || "Player", email: user.email, points: 0, weeklyScore: 0, role: "user", createdAt: serverTimestamp(), referralCode: user.uid.slice(0, 8), successfulReferrals: 0, lastLoginAt: serverTimestamp(), adComplete: false, totalAdViews: 0, lastAdView: null, quizCount: 0, quizResetAt: null });
+      } else { await update(uref, { lastLoginAt: serverTimestamp() }); }
+      const sref = ref(db, `scores/${user.uid}`);
+      const ss = await get(sref);
+      if (!ss.exists()) { await set(sref, { name: name || user.displayName || "Player", score: 0, updatedAt: serverTimestamp() }); }
+    };
+
+    const updateUserPillDisplay = () => {
+      document.querySelectorAll('.pointsVal').forEach(el => el.textContent = state.points);
+      document.querySelectorAll('.unameVal').forEach(el => el.textContent = '✨ ' + (state.userName || 'Player'));
+    };
+
+    const syncFromDb = async (user) => {
+      const snap = await get(ref(db, `users/${user.uid}`));
+      if (snap.exists()) {
+        const d = snap.val();
+        state.points = d.points || 0;
+        state.referralCount = d.successfulReferrals || 0;
+        state.userName = d.name || user.displayName || 'Player';
+        state.quizCount = d.quizCount || 0;
+        state.quizResetAt = d.quizResetAt || 0;
+        if (state.quizResetAt && Date.now() >= state.quizResetAt) {
+          state.quizCount = 0;
+          state.quizResetAt = 0;
+          update(ref(db, `users/${user.uid}`), { quizCount: 0, quizResetAt: null }).catch(() => {});
+        }
+        updateUserPillDisplay();
+        updateReferralTicker();
+        updateGameButtonUI();
+        if (state.points >= 1000) showOverlay("#successOverlay");
+      }
+    };
+
+    const addPoints = async (delta) => {
+      if (!state.user) return;
+      if (delta < 0 && state.points < Math.abs(delta)) { showErrorPopup("❌ পর্যাপ্ত পয়েন্ট নেই!"); return; }
+      const uref = ref(db, `users/${state.user.uid}`);
+      const sref = ref(db, `scores/${state.user.uid}`);
+      try {
+        await runTransaction(uref, (u) => { if (!u) return u; const current = u.points || 0; u.points = Math.max(0, current + delta); return u; });
+        await runTransaction(sref, (s) => { if (!s) return s; s.score = Math.max(0, (s.score || 0) + delta); s.name = state.user.displayName || s.name || "Player"; s.updatedAt = serverTimestamp(); return s; });
+        await syncFromDb(state.user);
+        await loadLeaderboard();
+        if (state.points >= 1000) showOverlay("#successOverlay");
+      } catch(e) { console.error("Add points error:", e); showErrorPopup("❌ পয়েন্ট যোগ করতে সমস্যা হয়েছে"); }
+    };
+
+    const updateReferralTicker = () => {
+      const el = $("#refTicker");
+      if (el) el.textContent = `👥 বন্ধুকে জানিয়ে আয় করো — প্রতি সফল referral এ 100 points। • সফল share: ${state.referralCount} জন`;
+    };
+
+    // ==========================================
+    // INTERSTITIAL AD (real banner via injectAdBanner)
+    // ==========================================
+    let isInterstitialShowing = false;
+    let interstitialCompleted = false;
+
+    function showInterstitialAd() {
+      if (isInterstitialShowing) return;
+      if (state.isAdShowing) { showErrorPopup("⏳ আগের এড শেষ হোক!"); return; }
+
+      if (isAdButtonLocked('interstitial')) {
+        showErrorPopup(`⏳ ${formatTime(Math.ceil(adButtonRemainingMs('interstitial') / 1000))} অপেক্ষা করুন`);
+        return;
+      }
+
+      isInterstitialShowing = true;
+      interstitialCompleted = false;
+      state.isAdShowing = true;
+
+      const overlay = document.getElementById('interstitialAdOverlay');
+      const status = document.getElementById('interstitialAdStatus');
+      const closeBtn = document.getElementById('interstitialCloseBtn');
+      const container = document.getElementById('interstitialAdContainer');
+
+      closeBtn.disabled = true;
+      status.textContent = '⏳ ৩ সেকেন্ড অপেক্ষা করুন...';
+      status.className = 'status-text';
+      overlay.classList.add('show');
+
+      injectAdBanner(container, AD_KEYS.small, 468, 60);
+
+      let secondsLeft = 18;
+      const timerInterval = setInterval(() => {
+        secondsLeft--;
+        if (secondsLeft > 0) {
+          status.textContent = `⏳ ${secondsLeft} সেকেন্ড অপেক্ষা করুন...`;
+        } else {
+          clearInterval(timerInterval);
+          interstitialCompleted = true;
+          closeBtn.disabled = false;
+          status.textContent = '✅ অ্যাড শেষ! Close করুন।';
+          status.className = 'status-text success';
+        }
+      }, 1000);
+
+      closeBtn.onclick = function() {
+        if (closeBtn.disabled) { showErrorPopup("⏳ অ্যাড শেষ হওয়া পর্যন্ত অপেক্ষা করুন!"); return; }
+        if (!interstitialCompleted) { showErrorPopup("❌ সম্পূর্ণ অ্যাড দেখুন!"); return; }
+        overlay.classList.remove('show');
+        isInterstitialShowing = false;
+        state.isAdShowing = false;
+        lockAdButton('interstitial');
+        addPoints(10);
+        toast("🎉 ১০ পয়েন্ট যোগ হয়েছে!");
+      };
+    }
+
+    // ==========================================
+    // BANNER ADS (top/bottom, real script injection)
+    // ==========================================
+    function loadBannerAds() {
+      injectAdBanner(document.getElementById('topBannerAd'), AD_KEYS.small, 468, 60);
+      injectAdBanner(document.getElementById('bottomBannerAd'), AD_KEYS.small, 468, 60);
+    }
+
+    // ==========================================
+    // AD SYSTEM (Secure) - Reward / More Income buttons
+    // ==========================================
+    const adViewState = {
+      lastAdView: 0,
+      adViewCount: 0,
+      dailyAdLimit: 25,
+      cooldownMinutes: 2,
+      adStartTime: 0,
+      adCompleted: false
+    };
+
+    function canViewAd() {
+      const today = new Date().toDateString();
+      const lastDate = new Date(adViewState.lastAdView).toDateString();
+      if (lastDate !== today) adViewState.adViewCount = 0;
+      if (adViewState.adViewCount >= adViewState.dailyAdLimit) {
+        showErrorPopup("📊 আজকের এড লিমিট শেষ! কাল আবার চেষ্টা করুন।");
+        return false;
+      }
+      return true;
+    }
+
+    async function recordAdView(userId, adType, pointsEarned) {
+      try {
+        const elapsed = (Date.now() - adViewState.adStartTime) / 1000;
+        const userRef = ref(db, `users/${userId}`);
+        const userSnap = await get(userRef);
+        if (!userSnap.exists()) {
+          await set(userRef, { name: "Player", email: "", points: 0, totalAdViews: 0, totalPointsFromAds: 0, createdAt: serverTimestamp() });
+        }
+        const adRef = ref(db, `adViews/${userId}`);
+        const newAdRef = push(adRef);
+        await set(newAdRef, {
+          type: adType,
+          points: pointsEarned,
+          timestamp: serverTimestamp(),
+          userAgent: navigator.userAgent || "unknown",
+          sessionId: Date.now().toString(36),
+          viewDuration: Math.floor(elapsed),
+          completed: true
+        });
+        await runTransaction(userRef, (u) => {
+          if (!u) return u;
+          u.totalAdViews = (u.totalAdViews || 0) + 1;
+          u.lastAdView = Date.now();
+          u.totalPointsFromAds = (u.totalPointsFromAds || 0) + pointsEarned;
+          return u;
+        });
+        adViewState.lastAdView = Date.now();
+        adViewState.adViewCount++;
+        return true;
+      } catch(e) {
+        console.error("Failed to record ad view:", e);
+        const reason = (e && (e.code || e.message)) ? `(${e.code || e.message})` : '';
+        showErrorPopup(`❌ এড রেকর্ড করতে সমস্যা! ${reason}\nআবার চেষ্টা করুন।`);
+        return false;
+      }
+    }
+
+    function showAdOverlay(title, isRewarded = false, directAdUrl = null) {
+      return new Promise((resolve) => {
+        const overlay = document.getElementById('adOverlay');
+        const frameContainer = document.getElementById('adFrame');
+        const text = document.getElementById('adText');
+        const closeBtn = document.getElementById('adCloseBtn');
+        const counter = document.getElementById('adCounter');
+        const titleEl = overlay.querySelector('.title');
+        if (titleEl) titleEl.textContent = title;
+
+        let adViewed = false;
+        adViewState.adStartTime = Date.now();
+        adViewState.adCompleted = false;
+
+        closeBtn.disabled = true;
+        counter.textContent = "⏳ 15s";
+        text.textContent = "📡 এড লোড হচ্ছে...";
+        overlay.classList.remove('hidden');
+
+        if (directAdUrl) {
+          frameContainer.innerHTML = '';
+          const iframe = document.createElement('iframe');
+          iframe.style.width = '100%';
+          iframe.style.minHeight = '250px';
+          iframe.style.border = 'none';
+          iframe.src = directAdUrl;
+          frameContainer.appendChild(iframe);
+        } else {
+          injectAdBanner(frameContainer, AD_KEYS.box, 300, 250);
+        }
+
+        setTimeout(() => {
+          text.textContent = isRewarded ? "🎬 Rewarded Ad Playing..." : "🎬 Ad Playing...";
+          let secondsLeft = 15;
+          counter.textContent = `⏳ ${secondsLeft}s`;
+          const timer = setInterval(() => {
+            secondsLeft--;
+            counter.textContent = `⏳ ${secondsLeft}s`;
+            if (secondsLeft <= 0) {
+              clearInterval(timer);
+              adViewed = true;
+              adViewState.adCompleted = true;
+              text.textContent = isRewarded ? "🎉 Reward Earned! Close to claim." : "✅ Ad Complete! Close to continue.";
+              closeBtn.disabled = false;
+              counter.textContent = "✅ Done!";
+            }
+          }, 1000);
+        }, 1200);
+
+        closeBtn.onclick = () => {
+          if (closeBtn.disabled) { showErrorPopup("⏳ এড শেষ হওয়া পর্যন্ত অপেক্ষা করুন!"); return; }
+          if (!adViewed || !adViewState.adCompleted) { showErrorPopup("❌ সম্পূর্ণ এড দেখুন! পয়েন্ট পাবেন না।"); return; }
+          closeAdOverlay();
+          resolve(true);
+        };
+      });
+    }
+
+    function closeAdOverlay() {
+      const overlay = document.getElementById('adOverlay');
+      overlay.classList.add('hidden');
+      const frameContainer = document.getElementById('adFrame');
+      if (frameContainer) frameContainer.innerHTML = '';
+    }
+
+    async function showSecureAd(adType, pointsReward, isRewarded = false) {
+      if (!canViewAd()) return false;
+      if (!state.user) { showErrorPopup("❌ Login first!"); return false; }
+      if (state.isAdShowing) { showErrorPopup("⏳ আগের এড শেষ হোক!"); return false; }
+
+      // Only reward/interstitial/moreIncome use the independent per-button lock.
+      // floatingAd1/floatingAd2 are not in adLocks — they manage their own cooldown.
+      if (adType in state.adLocks && isAdButtonLocked(adType)) {
+        showErrorPopup(`⏳ ${formatTime(Math.ceil(adButtonRemainingMs(adType) / 1000))} অপেক্ষা করুন`);
+        return false;
+      }
+
+      try {
+        state.isAdShowing = true;
+        const labelMap = {
+          reward: '🎬 এড দেখুন',
+          moreIncome: '🎁 বোনাস নিন',
+          interstitial: '📺 রিওয়ার্ড নিন',
+          floatingAd1: '💥 ধামাকা এড',
+          floatingAd2: '💰 টাকা এড',
+          monkeyApple: '🍎 আপনার পয়েন্ট নিন',
+          monkeyOrange: '🍊 তাড়াতাড়ি পয়েন্ট নাও'
+        };
+        const directAdUrlMap = {
+          monkeyApple: 'https://www.effectivecpmnetwork.com/i7pgvennx?key=21dca6ce1050059ab1f6e8a7451eb2a3',
+          monkeyOrange: 'https://www.effectivecpmnetwork.com/gb8sd6if?key=a85ae4dd30bf1258e7484c95a4c50354'
+        };
+        const label = labelMap[adType] || '🎬 বিজ্ঞাপন';
+        const result = await showAdOverlay(label, isRewarded, directAdUrlMap[adType] || null);
+        state.isAdShowing = false;
+        if (result) {
+          if (adType in state.adLocks) lockAdButton(adType);
+          const recorded = await recordAdView(state.user.uid, adType, pointsReward);
+          if (!recorded) return false;
+          await addPoints(pointsReward);
+          toast(`✅ ${pointsReward} points earned!`);
+          return true;
+        }
+        return false;
+      } catch(e) {
+        state.isAdShowing = false;
+        console.error("Ad error:", e);
+        showErrorPopup("❌ এড লোড করতে সমস্যা! নেটওয়ার্ক চেক করুন।");
+        return false;
+      }
+    }
+
+    // ==========================================
+    // AD BUTTON HANDLERS
+    // ==========================================
+    const handleRewardAd = async () => { await showSecureAd('reward', 10, false); };
+    const handleInterstitialAd = () => { showInterstitialAd(); };
+    const handleMoreIncomeAd = async () => { await showSecureAd('moreIncome', 10, false); };
+
+    // ==========================================
+    // FLOATING BUBBLE ANIMATION
+    // ==========================================
+    function setupBubble(id, speed) {
+      const el = document.getElementById(id);
+      if (!el || el.dataset.bubbleInit) return;
+      el.dataset.bubbleInit = '1';
+      let x = Math.random() * Math.max(10, window.innerWidth - 90);
+      let y = Math.random() * Math.max(10, window.innerHeight - 320) + 140;
+      let vx = (Math.random() > 0.5 ? 1 : -1) * speed * (0.8 + Math.random() * 0.6);
+      let vy = (Math.random() > 0.5 ? 1 : -1) * speed * (0.8 + Math.random() * 0.6);
+      el.style.left = x + 'px';
+      el.style.top = y + 'px';
+      function step() {
+        const w = el.offsetWidth || 68, h = el.offsetHeight || 68;
+        x += vx; y += vy;
+        if (x <= 4) { x = 4; vx = Math.abs(vx); }
+        if (x >= window.innerWidth - w - 4) { x = window.innerWidth - w - 4; vx = -Math.abs(vx); }
+        if (y <= 70) { y = 70; vy = Math.abs(vy); }
+        if (y >= window.innerHeight - h - 10) { y = window.innerHeight - h - 10; vy = -Math.abs(vy); }
+        el.style.left = x + 'px';
+        el.style.top = y + 'px';
+        requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+    function initFloatingBubbles() {
+      if (state.bubbleAnimStarted) return;
+      state.bubbleAnimStarted = true;
+      setupBubble('floatingAdBtn1', 0.55);
+      setupBubble('floatingAdBtn2', 0.45);
+    }
+
+    // ==========================================
+    // FLOATING AD 1 (3 minutes - 20 points) with 30s hold
+    // ==========================================
+    function clearFloatingHold1() {
+      if (state.autoAd1.holdInterval) { clearInterval(state.autoAd1.holdInterval); state.autoAd1.holdInterval = null; }
+      state.autoAd1.holding = false;
+    }
+
+    function startFloatingAd1Timer() {
+      clearFloatingHold1();
+      if (state.autoAd1.timerId) { clearInterval(state.autoAd1.timerId); state.autoAd1.timerId = null; }
+      state.autoAd1.isRunning = true;
+      state.autoAd1.remaining = 180;
+      const btn = document.getElementById('floatingAdBtn1');
+      const sub = document.getElementById('floatingSub1');
+      if (btn) { btn.classList.remove('ready'); btn.style.display = 'flex'; }
+      if (sub) sub.textContent = 'পয়েন্ট আসছে';
+      updateFloatingButton1();
+      state.autoAd1.timerId = setInterval(() => {
+        state.autoAd1.remaining--;
+        updateFloatingButton1();
+        if (state.autoAd1.remaining <= 0) {
+          clearInterval(state.autoAd1.timerId);
+          state.autoAd1.timerId = null;
+          state.autoAd1.isRunning = false;
+          enterFloatingHold1();
+        }
+      }, 1000);
+    }
+
+    function updateFloatingButton1() {
+      const timer = document.getElementById('floatingAdTimer1');
+      if (timer) timer.textContent = formatTime(Math.max(0, state.autoAd1.remaining));
+    }
+
+    function enterFloatingHold1() {
+      const btn = document.getElementById('floatingAdBtn1');
+      const timerEl = document.getElementById('floatingAdTimer1');
+      const subEl = document.getElementById('floatingSub1');
+      if (btn) btn.classList.add('ready');
+      if (timerEl) timerEl.textContent = '▶️ চাপ দাও';
+      state.autoAd1.holding = true;
+      state.autoAd1.holdRemaining = 30;
+      if (subEl) subEl.textContent = `${state.autoAd1.holdRemaining}s বাকি`;
+      if (state.autoAd1.holdInterval) clearInterval(state.autoAd1.holdInterval);
+      state.autoAd1.holdInterval = setInterval(() => {
+        state.autoAd1.holdRemaining--;
+        if (subEl) subEl.textContent = `${Math.max(0, state.autoAd1.holdRemaining)}s বাকি`;
+        if (state.autoAd1.holdRemaining <= 0) {
+          clearInterval(state.autoAd1.holdInterval);
+          state.autoAd1.holdInterval = null;
+          state.autoAd1.holding = false;
+          startFloatingAd1Timer();
+        }
+      }, 1000);
+    }
+
+    async function showFloatingAd1() {
+      if (state.isAdShowing) return;
+      clearFloatingHold1();
+      const btn = document.getElementById('floatingAdBtn1');
+      if (btn) btn.classList.remove('ready');
+      await showSecureAd('floatingAd1', 20, true);
+      if (state.user) startFloatingAd1Timer();
+    }
+
+    document.getElementById('floatingAdBtn1').onclick = () => {
+      if (state.autoAd1.holding && !state.isAdShowing) { showFloatingAd1(); }
+    };
+
+    // ==========================================
+    // FLOATING AD 2 (2 minutes - 10 points) with 30s hold
+    // ==========================================
+    function clearFloatingHold2() {
+      if (state.autoAd2.holdInterval) { clearInterval(state.autoAd2.holdInterval); state.autoAd2.holdInterval = null; }
+      state.autoAd2.holding = false;
+    }
+
+    function startFloatingAd2Timer() {
+      clearFloatingHold2();
+      if (state.autoAd2.timerId) { clearInterval(state.autoAd2.timerId); state.autoAd2.timerId = null; }
+      state.autoAd2.isRunning = true;
+      state.autoAd2.remaining = 120;
+      const btn = document.getElementById('floatingAdBtn2');
+      const sub = document.getElementById('floatingSub2');
+      if (btn) { btn.classList.remove('ready'); btn.style.display = 'flex'; }
+      if (sub) sub.textContent = 'নাও';
+      updateFloatingButton2();
+      state.autoAd2.timerId = setInterval(() => {
+        state.autoAd2.remaining--;
+        updateFloatingButton2();
+        if (state.autoAd2.remaining <= 0) {
+          clearInterval(state.autoAd2.timerId);
+          state.autoAd2.timerId = null;
+          state.autoAd2.isRunning = false;
+          enterFloatingHold2();
+        }
+      }, 1000);
+    }
+
+    function updateFloatingButton2() {
+      const timer = document.getElementById('floatingAdTimer2');
+      if (timer) timer.textContent = formatTime(Math.max(0, state.autoAd2.remaining));
+    }
+
+    function enterFloatingHold2() {
+      const btn = document.getElementById('floatingAdBtn2');
+      const timerEl = document.getElementById('floatingAdTimer2');
+      const subEl = document.getElementById('floatingSub2');
+      if (btn) btn.classList.add('ready');
+      if (timerEl) timerEl.textContent = '▶️ চাপ দাও';
+      state.autoAd2.holding = true;
+      state.autoAd2.holdRemaining = 30;
+      if (subEl) subEl.textContent = `${state.autoAd2.holdRemaining}s বাকি`;
+      if (state.autoAd2.holdInterval) clearInterval(state.autoAd2.holdInterval);
+      state.autoAd2.holdInterval = setInterval(() => {
+        state.autoAd2.holdRemaining--;
+        if (subEl) subEl.textContent = `${Math.max(0, state.autoAd2.holdRemaining)}s বাকি`;
+        if (state.autoAd2.holdRemaining <= 0) {
+          clearInterval(state.autoAd2.holdInterval);
+          state.autoAd2.holdInterval = null;
+          state.autoAd2.holding = false;
+          startFloatingAd2Timer();
+        }
+      }, 1000);
+    }
+
+    async function showFloatingAd2() {
+      if (state.isAdShowing) return;
+      clearFloatingHold2();
+      const btn = document.getElementById('floatingAdBtn2');
+      if (btn) btn.classList.remove('ready');
+      await showSecureAd('floatingAd2', 10, true);
+      if (state.user) startFloatingAd2Timer();
+    }
+
+    document.getElementById('floatingAdBtn2').onclick = () => {
+      if (state.autoAd2.holding && !state.isAdShowing) { showFloatingAd2(); }
+    };
+
+    // ==========================================
+    // WITHDRAW SYSTEM (in-app multi-step flow)
+    // ==========================================
+    let wdSelectedMethod = null;
+    let wdNumber = null;
+    let wdName = null;
+
+    function wdShowStep(n) {
+      [1, 2, 3, 4].forEach(i => {
+        const el = document.getElementById('withdrawStep' + i);
+        if (el) el.classList.toggle('hidden', i !== n);
+      });
+    }
+
+    function openWithdrawMethodPicker() {
+      wdSelectedMethod = null; wdNumber = null; wdName = null;
+      document.querySelectorAll('.wd-method').forEach(el => el.classList.remove('selected'));
+      const numInput = document.getElementById('withdrawNumberInput'); if (numInput) numInput.value = '';
+      const nameInput = document.getElementById('withdrawNameInput'); if (nameInput) nameInput.value = '';
+      wdShowStep(1);
+      showOverlay('#withdrawOverlay');
+    }
+
+    document.querySelectorAll('.wd-method').forEach(el => {
+      el.addEventListener('click', () => {
+        document.querySelectorAll('.wd-method').forEach(x => x.classList.remove('selected'));
+        el.classList.add('selected');
+        wdSelectedMethod = el.dataset.method;
+        setTimeout(() => wdShowStep(2), 250);
+      });
+    });
+
+    window.wdBackToMethod = () => wdShowStep(1);
+    window.wdBackToNumber = () => wdShowStep(2);
+
+    window.wdConfirmNumber = () => {
+      const v = document.getElementById('withdrawNumberInput').value.trim();
+      if (!v) { showErrorPopup("📱 পেমেন্ট নাম্বার দিন!"); return; }
+      wdNumber = v;
+      wdShowStep(3);
+    };
+
+    window.wdConfirmName = async () => {
+      const v = document.getElementById('withdrawNameInput').value.trim();
+      if (!v) { showErrorPopup("👤 আপনার নাম দিন!"); return; }
+      wdName = v;
+      await submitWithdrawRequest();
+    };
+
+    window.closeWithdrawFlow = () => hideOverlay('#withdrawOverlay');
+
+    async function submitWithdrawRequest() {
+      if (!state.user) return showErrorPopup("Login first");
+      try {
+        const reqRef = push(ref(db, "requests"));
+        await set(reqRef, {
+          uid: state.user.uid,
+          name: wdName,
+          method: wdSelectedMethod,
+          number: wdNumber,
+          points: state.withdrawThreshold,
+          amount: 50,
+          status: "pending",
+          createdAt: serverTimestamp()
+        });
+        localStorage.setItem(`withdraw_pending_${state.user.uid}`, reqRef.key);
+        await addPoints(-state.withdrawDeduct);
+        wdShowStep(4);
+        const btn = $("#withdrawBtn");
+        if (btn) btn.textContent = "⏳ পেমেন্ট পেন্ডিং";
+        setTimeout(() => { hideOverlay('#withdrawOverlay'); }, 2500);
+      } catch(e) {
+        console.error("Withdraw error:", e);
+        const reason = (e && (e.code || e.message)) ? `(${e.code || e.message})` : '';
+        showErrorPopup(`❌ Withdraw request failed! ${reason}`);
+      }
+    }
+
+    window.openWithdraw = async () => {
+      if (!state.user) return showErrorPopup("Login first");
+      if (state.points < state.withdrawThreshold) return showErrorPopup(`❌ ${state.withdrawThreshold} points লাগবে। আপনার আছে ${state.points} points`);
+      const pending = localStorage.getItem(`withdraw_pending_${state.user.uid}`);
+      if (pending) return showErrorPopup("⏳ আপনার withdraw request ইতিমধ্যে পেমেন্ট পেন্ডিং আছে");
+      openWithdrawMethodPicker();
+    };
+
+    const restoreWithdrawPending = async () => {
+      if (!state.user) return;
+      const pendId = localStorage.getItem(`withdraw_pending_${state.user.uid}`);
+      if (!pendId) { const btn = $("#withdrawBtn"); if (btn) btn.textContent = "💳 Withdraw"; return; }
+      try {
+        const snap = await get(ref(db, `requests/${pendId}`));
+        if (snap.exists() && snap.val().status === "pending") {
+          const btn = $("#withdrawBtn"); if (btn) btn.textContent = "⏳ পেমেন্ট পেন্ডিং";
+          const statusText = $("#withdrawStatusText"); if (statusText) statusText.textContent = "⏳ Your request is Pending";
+        } else {
+          localStorage.removeItem(`withdraw_pending_${state.user.uid}`);
+          const btn = $("#withdrawBtn"); if (btn) btn.textContent = "💳 Withdraw";
+        }
+      } catch(e) { console.error("Restore withdraw error:", e); }
+    };
+
+    const attachWithdrawListener = () => {
+      if (!state.user) return;
+      const pendId = localStorage.getItem(`withdraw_pending_${state.user.uid}`);
+      if (!pendId) return;
+      if (state.wsUnsub) state.wsUnsub();
+      state.wsUnsub = onValue(ref(db, `requests/${pendId}`), snap => {
+        if (!snap.exists()) return;
+        const d = snap.val();
+        if (d.status === "pending") { const btn = $("#withdrawBtn"); if (btn) btn.textContent = "⏳ পেমেন্ট পেন্ডিং"; }
+        else {
+          const btn = $("#withdrawBtn"); if (btn) btn.textContent = "💳 Withdraw";
+          localStorage.removeItem(`withdraw_pending_${state.user.uid}`);
+          if (d.status === "approved") toast("✅ Withdraw approved!");
+          else if (d.status === "rejected") toast("❌ Withdraw rejected");
+        }
+      });
+    };
+
+    // ==========================================
+    // GAME SYSTEM (4 options)
+    // ==========================================
+    function canPlayQuiz() {
+      return !(state.quizCount >= state.dailyQuizLimit && state.quizResetAt > Date.now());
+    }
+
+    function updateGameButtonUI() {
+      const btn = document.getElementById('startGameBtn');
+      if (!btn) return;
+      if (state.quizCount >= state.dailyQuizLimit && state.quizResetAt > Date.now()) {
+        btn.disabled = true;
+        startGameLockCountdown();
+      } else {
+        btn.disabled = false;
+        btn.textContent = '🎮 গেম খেলুন';
+        if (state.quizLockTimerId) { clearInterval(state.quizLockTimerId); state.quizLockTimerId = null; }
+      }
+    }
+
+    function startGameLockCountdown() {
+      const btn = document.getElementById('startGameBtn');
+      if (!btn) return;
+      if (state.quizLockTimerId) clearInterval(state.quizLockTimerId);
+      const tick = () => {
+        const left = state.quizResetAt - Date.now();
+        if (left <= 0) {
+          clearInterval(state.quizLockTimerId);
+          state.quizLockTimerId = null;
+          state.quizCount = 0;
+          state.quizResetAt = 0;
+          if (state.user) update(ref(db, `users/${state.user.uid}`), { quizCount: 0, quizResetAt: null }).catch(() => {});
+          updateGameButtonUI();
+          return;
+        }
+        const h = Math.floor(left / 3600000);
+        const m = Math.floor((left % 3600000) / 60000);
+        const s = Math.floor((left % 60000) / 1000);
+        btn.textContent = `⏳ আবার খেলুন: ${h}ঘ ${m}মি ${s}সে`;
+      };
+      tick();
+      state.quizLockTimerId = setInterval(tick, 1000);
+    }
+
+    function incrementQuizCount() {
+      state.quizCount++;
+      if (state.user) update(ref(db, `users/${state.user.uid}`), { quizCount: state.quizCount }).catch(() => {});
+      if (state.quizCount >= state.dailyQuizLimit) {
+        state.quizResetAt = Date.now() + 24 * 60 * 60 * 1000;
+        if (state.user) update(ref(db, `users/${state.user.uid}`), { quizResetAt: state.quizResetAt }).catch(() => {});
+        showErrorPopup("আজকের মতো লিমিট শেষ! বেশি বেশি এড দেখুন, দ্রুত পয়েন্ট নিন।");
+        updateGameButtonUI();
+      }
+    }
+
+    const makeQuestion = () => {
+      let a, b, answer, text, opts, tries = 0;
+      while (tries < 30) {
+        tries++;
+        const kind = randInt(1, 3);
+        if (kind === 1) { a = randInt(2, 40) * 2; b = randInt(2, 40) * 2; answer = a + b; text = `${a} + ${b} = ?`; }
+        else if (kind === 2) { b = randInt(2, 20) * 2; a = b + randInt(2, 20) * 2; answer = a - b; text = `${a} - ${b} = ?`; }
+        else { a = randInt(2, 6); b = randInt(2, 6); answer = a * b; text = `${a} × ${b} = ?`; }
+        const qk = `${text}|${answer}`;
+        if (!state.usedQuestions.has(qk)) {
+          state.usedQuestions.add(qk);
+          const setOpts = new Set([answer]);
+          while (setOpts.size < 4) { const delta = randInt(-8, 8); const v = Math.max(1, answer + (delta === 0 ? 1 : delta)); setOpts.add(v); }
+          opts = [...setOpts].sort(() => Math.random() - 0.5);
+          state.q = { text, answer, options: opts };
+          break;
+        }
+      }
+      const qEl = $("#question"); if (qEl) qEl.textContent = state.q.text;
+      const answersEl = $("#answers"); if (answersEl) { answersEl.innerHTML = ""; state.q.options.forEach(v => { const b = document.createElement("button"); b.className = "btn"; b.textContent = v; b.onclick = () => checkAnswer(v); answersEl.appendChild(b); }); }
+    };
+
+    const startRound = () => {
+      if (!canPlayQuiz()) {
+        clearInterval(state.timerId);
+        showMsg("⏰ আজকের লিমিট শেষ! নতুন করে খেলতে অপেক্ষা করুন।", "bad");
+        updateGameButtonUI();
+        return;
+      }
+      clearInterval(state.timerId);
+      state.timer = 5;
+      const timerEl = $("#timer"); if (timerEl) timerEl.textContent = state.timer;
+      makeQuestion();
+      incrementQuizCount();
+      state.timerId = setInterval(() => {
+        state.timer--;
+        const timerEl = $("#timer"); if (timerEl) timerEl.textContent = state.timer;
+        if (state.timer <= 0) { clearInterval(state.timerId); showMsg("⏰ Time up!", "bad"); setTimeout(startRound, 700); }
+      }, 1000);
+    };
+
+    const startGame = () => {
+      if (!state.user) return showErrorPopup("Login first");
+      if (!canPlayQuiz()) { showErrorPopup("আজকের মতো লিমিট শেষ! বেশি বেশি এড দেখুন, দ্রুত পয়েন্ট নিন।"); return; }
+      state.correctCount = 0;
+      startRound();
+    };
+
+    const checkAnswer = async (v) => {
+      if (!state.q) return;
+      if (v === state.q.answer) {
+        await addPoints(5);
+        state.correctCount++;
+        showMsg("✅ সঠিক! +5 points", "ok");
+        clearInterval(state.timerId);
+        if (state.correctCount >= 10) {
+          state.correctCount = 0;
+          showMsg("🎉 ১০টি সঠিক! এখন এড দেখুন", "info");
+          await handleInterstitialAd();
+          setTimeout(startRound, 500);
+        } else { setTimeout(startRound, 400); }
+      } else { showMsg("❌ ভুল!", "bad"); }
+    };
+
+    // ==========================================
+    // LEADERBOARD
+    // ==========================================
+    const loadLeaderboard = async () => {
+      try {
+        if (!state.user) return;
+        const snap = await get(ref(db, "scores"));
+        const data = snap.val() || {};
+        const list = Object.values(data).sort((a, b) => (b.score || 0) - (a.score || 0)).slice(0, 5);
+        const leaderEl = $("#leaderList");
+        if (leaderEl) leaderEl.innerHTML = list.map(x => `<li><span>${x.name || "Player"}</span><span>${x.score || 0}</span></li>`).join("") || "<li><span>No scores</span><span>0</span></li>";
+      } catch(e) { const leaderEl = $("#leaderList"); if (leaderEl) leaderEl.innerHTML = "<li><span>Permission denied</span><span>0</span></li>"; }
+    };
+
+    // ==========================================
+    // MONKEY MINI-GAME (decorative walking monkeys with timed fruit ad-rewards)
+    // ==========================================
+    // Each monkey is restricted to its own half of the strip so they can
+    // approach the middle (a cute "almost meet") but can never overlap/merge.
+    const monkeyState = {
+      male:   { x: 4,  dir: 1,  speed: 0.14, min: 3,  max: 45 },
+      female: { x: 88, dir: -1, speed: 0.13, min: 55, max: 88 }
+    };
+    const FRUIT_TIMERS = {
+      apple:  { duration: 5 * 60, remaining: 5 * 60, burstShown: false, autoTimeout: null, adType: 'monkeyApple',  points: 20 },
+      orange: { duration: 7 * 60, remaining: 7 * 60, burstShown: false, autoTimeout: null, adType: 'monkeyOrange', points: 20 }
+    };
+
+    function formatMinSec(totalSeconds) {
+      const m = Math.floor(Math.max(0, totalSeconds) / 60);
+      const s = Math.max(0, totalSeconds) % 60;
+      return `${m}:${s.toString().padStart(2, '0')}`;
+    }
+
+    function stepMonkeys() {
+      const m = monkeyState.male, f = monkeyState.female;
+      if (!FRUIT_TIMERS.apple.burstShown) {
+        m.x += m.dir * m.speed;
+        if (m.x <= m.min) { m.x = m.min; m.dir = 1; }
+        if (m.x >= m.max) { m.x = m.max; m.dir = -1; }
+      }
+      if (!FRUIT_TIMERS.orange.burstShown) {
+        f.x += f.dir * f.speed;
+        if (f.x <= f.min) { f.x = f.min; f.dir = 1; }
+        if (f.x >= f.max) { f.x = f.max; f.dir = -1; }
+      }
+      const maleEl = document.getElementById('monkeyMale');
+      const femaleEl = document.getElementById('monkeyFemale');
+      if (maleEl) { maleEl.style.left = m.x + '%'; maleEl.classList.toggle('facing-left', m.dir < 0); }
+      if (femaleEl) { femaleEl.style.left = f.x + '%'; femaleEl.classList.toggle('facing-left', f.dir < 0); }
+      requestAnimationFrame(stepMonkeys);
+    }
+    requestAnimationFrame(stepMonkeys);
+
+    function tickFruitTimers() {
+      ['apple', 'orange'].forEach(key => {
+        const f = FRUIT_TIMERS[key];
+        if (f.burstShown) return;
+        f.remaining--;
+        const textEl = document.getElementById(key + 'TimerText');
+        const badgeEl = document.getElementById(key + 'Badge');
+        if (textEl) textEl.textContent = formatMinSec(f.remaining);
+        if (badgeEl) badgeEl.classList.toggle('urgent', f.remaining <= 3);
+        if (f.remaining <= 0) triggerFruitBurst(key);
+      });
+    }
+    setInterval(() => { if (state.user) tickFruitTimers(); }, 1000);
+
+    function triggerFruitBurst(key) {
+      const f = FRUIT_TIMERS[key];
+      f.burstShown = true;
+      const badgeEl = document.getElementById(key + 'Badge');
+      if (badgeEl) badgeEl.style.visibility = 'hidden';
+      const btn = document.getElementById(key + 'BurstBtn');
+      if (btn) btn.classList.remove('hidden');
+      if (f.autoTimeout) clearTimeout(f.autoTimeout);
+      f.autoTimeout = setTimeout(() => { if (f.burstShown) resetFruitTimer(key); }, 30000);
+    }
+
+    function resetFruitTimer(key) {
+      const f = FRUIT_TIMERS[key];
+      if (f.autoTimeout) { clearTimeout(f.autoTimeout); f.autoTimeout = null; }
+      f.burstShown = false;
+      f.remaining = f.duration;
+      const badgeEl = document.getElementById(key + 'Badge');
+      if (badgeEl) { badgeEl.style.visibility = 'visible'; badgeEl.classList.remove('urgent'); }
+      const btn = document.getElementById(key + 'BurstBtn');
+      if (btn) btn.classList.add('hidden');
+      const textEl = document.getElementById(key + 'TimerText');
+      if (textEl) textEl.textContent = formatMinSec(f.remaining);
+    }
+
+    window.claimMonkeyReward = async function(key) {
+      const f = FRUIT_TIMERS[key];
+      if (!f || !f.burstShown) return;
+      if (!state.user) { showErrorPopup("Login first"); return; }
+      if (state.isAdShowing) { showErrorPopup("⏳ আগের এড শেষ হোক!"); return; }
+      const btn = document.getElementById(key + 'BurstBtn');
+      if (btn) btn.classList.add('hidden');
+      await showSecureAd(f.adType, f.points, true);
+      resetFruitTimer(key);
+    };
+
+    // ==========================================
+    // RULES & REFERRAL
+    // ==========================================
+    const renderRules = () => { const el = $("#rulesList"); if (el) { el.innerHTML = APP_SETTINGS.rules.map(r => `<div class="rulesItem">${r}</div>`).join("") + `<div class="rulesItem"><strong>WhatsApp:</strong> আপনার সমস্যা জানাতে WhatsApp-এ মেসেজ করুন।</div>`; } };
+    const renderReferral = () => { if (!state.user) return; const link = `${state.appLink}?ref=${encodeURIComponent(state.user.uid.slice(0, 8))}`; const el = $("#refLinkText"); if (el) el.textContent = link; const cond = $("#refConditions"); if (cond) { cond.innerHTML = APP_SETTINGS.rules.map(r => `<div class="rulesItem">${r}</div>`).join("") + `<div class="rulesItem"><strong>Referral bonus:</strong> প্রতিটি valid referral-এ 100 points.</div>`; } };
+    const showRules = () => { renderRules(); showOverlay("#rulesOverlay"); };
+    const closeRules = () => hideOverlay("#rulesOverlay");
+    const openReferral = () => { if (!state.user) return showErrorPopup("Login first"); renderReferral(); showOverlay("#referralOverlay"); };
+    const closeReferral = () => hideOverlay("#referralOverlay");
+    const openWhatsappComplaint = () => window.open(APP_SETTINGS.contactWhatsapp, "_blank");
+    const dismissVpnNotice = () => { state.rememberVpnDismiss = true; hideOverlay("#vpnOverlay"); };
+    const hideSuccess = () => hideOverlay("#successOverlay");
+    const closeWithdrawStatus = () => hideOverlay("#withdrawStatusOverlay");
+
+    const copyFallback = (text) => { const ta = document.createElement("textarea"); ta.value = text; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); } catch(e) {} document.body.removeChild(ta); };
+    const copyText = async (text) => { try { if (navigator.clipboard?.writeText) { await navigator.clipboard.writeText(text); return true; } } catch(e) {} copyFallback(text); return false; };
+    const copyReferralLink = async () => { if (!state.user) return showErrorPopup("Login first"); await copyText(`${state.appLink}?ref=${encodeURIComponent(state.user.uid.slice(0, 8))}`); toast("✅ Referral link copied"); };
+    const exitApp = async () => { try { await signOut(auth); } catch(e) {} window.close(); setTimeout(() => location.href = "about:blank", 150); };
+
+    // ==========================================
+    // TIMER SYSTEM (3 Ad Grid Buttons)
+    // ==========================================
+    const AD_BUTTON_UI = {
+      reward: { overlay: 'rewardTimerOverlay', count: 'rewardTimerCount' },
+      interstitial: { overlay: 'interstitialTimerOverlay', count: 'interstitialTimerCount' },
+      moreIncome: { overlay: 'moreIncomeTimerOverlay', count: 'moreIncomeTimerCount' }
+    };
+    const AD_LOCK_DURATION_MS = 3 * 60 * 1000;
+
+    function lockAdButton(adType) {
+      state.adLocks[adType] = Date.now() + AD_LOCK_DURATION_MS;
+    }
+    function isAdButtonLocked(adType) {
+      return (state.adLocks[adType] || 0) > Date.now();
+    }
+    function adButtonRemainingMs(adType) {
+      return Math.max(0, (state.adLocks[adType] || 0) - Date.now());
+    }
+
+    // Single ticker, but each button only ever looks at its OWN key in state.adLocks —
+    // watching an ad on one button can never lock/unlock a different button.
+    function tickAdButtonOverlays() {
+      Object.keys(AD_BUTTON_UI).forEach(adType => {
+        const ui = AD_BUTTON_UI[adType];
+        const overlayEl = document.getElementById(ui.overlay);
+        const countEl = document.getElementById(ui.count);
+        const remaining = adButtonRemainingMs(adType);
+        if (remaining > 0) {
+          if (overlayEl) overlayEl.classList.add('active');
+          if (countEl) countEl.textContent = formatTime(Math.ceil(remaining / 1000));
+        } else {
+          if (overlayEl) overlayEl.classList.remove('active');
+        }
+      });
+    }
+
+    function initAdTimers() {
+      tickAdButtonOverlays();
+      if (state.user) {
+        startFloatingAd1Timer();
+        startFloatingAd2Timer();
+        initFloatingBubbles();
+      }
+    }
+
+    // ==========================================
+    // APP SETTINGS
+    // ==========================================
+    const APP_SETTINGS = {
+      contactWhatsapp: "https://wa.me/8801880110552",
+      rules: [
+        "📌 ভিপিএন কানেক্ট না করে বেশি বেশি এড দেখুন পয়েন্ট নিন।",
+        "📌 একটি ফোনে একের বেশি অ্যাকাউন্ট খোলার চেষ্টা করলে account blocked হতে পারে।",
+        "📌 Auto-clicker, bot, বা hacking software ব্যবহার নিষিদ্ধ।",
+        "📌 Withdraw request review time 24 থেকে 48 ঘণ্টা হতে পারে।",
+        "📌 ভুল payment number দিলে support team দায়ী থাকবে না।",
+        "📌 Fake referral বা duplicate activity করলে bonus বাতিল হতে পারে।",
+        "📌 এড না দেখে পয়েন্ট পাওয়া যাবে না।"
+      ]
+    };
+
+    // ==========================================
+    // AUTH STATE OBSERVER
+    // ==========================================
+    onAuthStateChanged(auth, async user => {
+      const loginOverlay = document.getElementById('loginOverlay');
+      const mainApp = document.getElementById('mainApp');
+
+      if (user) {
+        state.user = user;
+        loginOverlay.style.display = 'none';
+        mainApp.style.display = 'flex';
+        mainApp.classList.add('active');
+        await ensureUserDoc(user, user.displayName || "Player");
+        await syncFromDb(user);
+        await loadLeaderboard();
+        attachWithdrawListener();
+        await restoreWithdrawPending();
+        initAdTimers();
+        loadBannerAds();
+        document.getElementById('floatingAdBtn1').style.display = 'flex';
+        document.getElementById('floatingAdBtn2').style.display = 'flex';
+        initFloatingBubbles();
+      } else {
+        loginOverlay.style.display = 'flex';
+        mainApp.style.display = 'none';
+        mainApp.classList.remove('active');
+        state.user = null;
+        document.getElementById('floatingAdBtn1').style.display = 'none';
+        document.getElementById('floatingAdBtn2').style.display = 'none';
+        if (state.autoAd1.timerId) { clearInterval(state.autoAd1.timerId); state.autoAd1.timerId = null; state.autoAd1.isRunning = false; }
+        if (state.autoAd2.timerId) { clearInterval(state.autoAd2.timerId); state.autoAd2.timerId = null; state.autoAd2.isRunning = false; }
+        clearFloatingHold1();
+        clearFloatingHold2();
+        if (window.showWelcomeTip) window.showWelcomeTip();
+      }
+    });
+
+    // ==========================================
+    // AUTO AD TIMER CHECK (ad-grid cooldown overlays only —
+    // floating bubbles manage their own restart via 30s hold)
+    // ==========================================
+    setInterval(() => {
+      if (state.user) tickAdButtonOverlays();
+    }, 1000);
+
+    // ==========================================
+    // BUTTONS
+    // ==========================================
+    document.getElementById('signupBtn').onclick = signup;
+    document.getElementById('loginBtn').onclick = login;
+    document.getElementById('startGameBtn').onclick = startGame;
+    document.getElementById('rewardBtn').onclick = handleRewardAd;
+    document.getElementById('interstitialBtn').onclick = handleInterstitialAd;
+    document.getElementById('moreIncomeBtn').onclick = handleMoreIncomeAd;
+    document.getElementById('withdrawBtn').onclick = window.openWithdraw;
+
+    // ==========================================
+    // GLOBALS
+    // ==========================================
+    window.signup = signup;
+    window.login = login;
+    window.startGame = startGame;
+    window.showRewardAd = handleRewardAd;
+    window.openWithdraw = window.openWithdraw;
+    window.showErrorPopup = showErrorPopup;
+    window.closeErrorPopup = closeErrorPopup;
+    window.hideQuit = () => hideOverlay("#quitOverlay");
+    window.hideLogoutConfirm = () => hideOverlay("#logoutOverlay");
+    window.confirmLogout = confirmLogout;
+    window.confirmLogoutAction = doLogout;
+    window.confirmQuit = confirmQuit;
+    window.exitApp = exitApp;
+    window.closeRules = closeRules;
+    window.showRules = showRules;
+    window.openWhatsappComplaint = openWhatsappComplaint;
+    window.dismissVpnNotice = dismissVpnNotice;
+    window.openReferral = openReferral;
+    window.closeReferral = closeReferral;
+    window.copyReferralLink = copyReferralLink;
+    window.hideSuccess = hideSuccess;
+    window.closeWithdrawStatus = closeWithdrawStatus;
+
+    console.log("🚀 Earn_in_Math App Loaded Successfully!");
+    console.log("✅ Real banner ads via script-injection fix!");
+    console.log("✅ Floating bubble ad buttons (moving) with 30s hold!");
+    console.log("✅ Bigger buttons, tighter screen fit!");
+  </script>
+</body>
+  </html>

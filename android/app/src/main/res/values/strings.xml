@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Earn_In_Math</string>
+    <string name="title_activity_main">Earn_In_Math</string>
+    <string name="package_name">com.azizul.earninmath</string>
+    <string name="custom_url_scheme">com.azizul.earninmath</string>
+</resources>
