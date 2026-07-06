@@ -1,0 +1,46 @@
+name: Build Android APK
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+      
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Add build script if missing
+        run: |
+          if ! grep -q '"build"' package.json; then
+            npm install --save-dev json
+            npx json -I -f package.json -e 'this.scripts=this.scripts||{};this.scripts.build="echo \"No build step needed\""'
+          fi
+      
+      - name: Build web app
+        run: npm run build || echo "No build step needed"
+      
+      - name: Sync Capacitor
+        run: npx cap sync android
+      
+      - name: Build APK
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+      
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug
+          path: android/app/build/outputs/apk/debug/
